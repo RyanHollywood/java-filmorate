@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,10 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         if (film.getReleaseDate().isAfter(CINEMA_BIRTH_DATE)) {
+            log.debug(film.getName() + "added to filmStorage");
             filmStorage.put(film.getId(), film);
         } else {
+            log.warn(film.getName() + " release date should be after " + CINEMA_BIRTH_DATE);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return film;
@@ -41,8 +44,10 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         if (film.getReleaseDate().isAfter(CINEMA_BIRTH_DATE)) {
+            log.debug(film.getName() + "updated in filmStorage");
             filmStorage.put(film.getId(), film);
         } else {
+            log.warn(film.getName() + " release date should be after " + CINEMA_BIRTH_DATE);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return film;

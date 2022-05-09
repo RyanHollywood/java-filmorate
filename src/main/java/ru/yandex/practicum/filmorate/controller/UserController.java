@@ -24,6 +24,7 @@ public class UserController {
     //Создание пользователя
     @PostMapping
     public User create(@Valid @RequestBody User user) {
+        log.debug(user.getName() + "added to userStorage");
         userStorage.put(user.getId(), user);
         return user;
     }
@@ -31,6 +32,7 @@ public class UserController {
     //Обновление пользователя - исправить
     @PutMapping
     public User update(@Valid @RequestBody User user) {
+        log.debug(user.getName() + "updated in userStorage");
         userStorage.put(user.getId(), user);
         return user;
     }
