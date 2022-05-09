@@ -1,8 +1,14 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +18,33 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
+    private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
+
     //Хранилище фильмов
     Map<Integer, Film> filmStorage = new HashMap<>();
 
+    //Логгер
+    private final static Logger log = LoggerFactory.getLogger(FilmController.class);
+
     //Добавление фильма
     @PostMapping
-    public Film create(@RequestBody Film film) {
-        filmStorage.put(film.getId(), film);
+    public Film create(@Valid @RequestBody Film film) {
+        if (film.getReleaseDate().isAfter(CINEMA_BIRTH_DATE)) {
+            filmStorage.put(film.getId(), film);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         return film;
     }
 
-    //Обновление фильма
+    //Обновление фильма - исправить
     @PutMapping
-    public Film update(@RequestBody Film film) {
-        filmStorage.put(film.getId(), film);
+    public Film update(@Valid @RequestBody Film film) {
+        if (film.getReleaseDate().isAfter(CINEMA_BIRTH_DATE)) {
+            filmStorage.put(film.getId(), film);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         return film;
     }
 
@@ -33,9 +52,5 @@ public class FilmController {
     @GetMapping
     public List<Film> filmList() {
         return new ArrayList<>(filmStorage.values());
-    }
-
-    private boolean userValidation(Film film) {
-        return true;
     }
 }

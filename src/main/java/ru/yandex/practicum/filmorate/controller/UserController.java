@@ -1,8 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,27 +18,26 @@ public class UserController {
     //Хранилище пользователей
     Map<Integer, User> userStorage = new HashMap<>();
 
+    //Логгер
+    private final static Logger log = LoggerFactory.getLogger(UserController.class);
+
     //Создание пользователя
     @PostMapping
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         userStorage.put(user.getId(), user);
         return user;
     }
 
-    //Обновление пользователя
+    //Обновление пользователя - исправить
     @PutMapping
-    public User update(@RequestBody User user) {
+    public User update(@Valid @RequestBody User user) {
         userStorage.put(user.getId(), user);
         return user;
     }
 
-    //Получние списка всех пользователей
+    //Получение списка всех пользователей
     @GetMapping
     public List<User> userList() {
         return new ArrayList<>(userStorage.values());
-    }
-
-    private boolean filmValidation(User user) {
-        return true;
     }
 }
