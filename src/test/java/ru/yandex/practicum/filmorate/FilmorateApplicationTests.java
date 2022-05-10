@@ -158,6 +158,7 @@ class FilmorateApplicationTests {
     @Test
     public void getFilms() throws Exception {
         postWithOkRequest(film, FILMS_PATH);
+
         JSONArray filmsArray = new JSONArray();
         filmsArray.put(new JSONObject(mapper.writeValueAsString(film)));
 
