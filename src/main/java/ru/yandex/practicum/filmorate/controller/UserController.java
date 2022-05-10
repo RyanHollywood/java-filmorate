@@ -21,14 +21,14 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        log.debug(user.getName() + "added to userStorage");
+        log.debug(user.getLogin() + " added to userStorage");
         userStorage.put(user.getId(), user);
         return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        log.debug(user.getName() + "updated in userStorage");
+        log.debug(user.getLogin() + " updated in userStorage");
         userStorage.put(user.getId(), user);
         return user;
     }

@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,6 +27,9 @@ class FilmorateApplicationTests {
 
     private User user;
     private Film film;
+
+    private final String USERS_PATH = "/users";
+    private final String FILMS_PATH = "/films";
 
     @Autowired
     private MockMvc mvc;
@@ -39,78 +45,78 @@ class FilmorateApplicationTests {
 
     @Test
     public void createValidUser() throws Exception {
-        postWithOkRequest(user, "/users");
+        postWithOkRequest(user, USERS_PATH);
     }
 
     @Test
     public void createEmptyEmailUser() throws Exception {
         user.setEmail(null);
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createBlankEmailUser() throws Exception {
         user.setEmail(" ");
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createInvalidEmailUser() throws Exception {
         user.setEmail("userMail.ru");
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createEmptyLoginUser() throws Exception {
         user.setLogin(null);
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createBlankLoginUser() throws Exception {
         user.setLogin(" ");
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createInvalidLoginUser() throws Exception {
         user.setLogin("user login");
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createInvalidBirthdayUser() throws Exception {
         user.setBirthday(LocalDate.now().plusDays(1));
-        postWithBadRequest(user, "/users");
+        postWithBadRequest(user, USERS_PATH);
     }
 
     @Test
     public void createValidFilm() throws Exception {
-        postWithOkRequest(film, "/films");
+        postWithOkRequest(film, FILMS_PATH);
     }
 
     @Test
     public void createEmptyNameFilm() throws Exception {
         film.setName(null);
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
     }
 
     @Test
     public void createBlankNameFilm() throws Exception {
         film.setName(" ");
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
     }
 
     @Test
     public void createEmptyDescriptionFilm() throws Exception {
         film.setDescription(null);
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
     }
 
     @Test
     public void createBlankDescriptionFilm() throws Exception {
         film.setDescription(" ");
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
     }
 
     @Test
@@ -120,20 +126,46 @@ class FilmorateApplicationTests {
             invalidDescription += "x";
         }
         film.setDescription(invalidDescription);
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
     }
 
     @Test
     public void createInvalidReleaseDateFilm() throws Exception {
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
     }
-
 
     @Test
     public void createInvalidDurationFilm() throws Exception {
         film.setDuration(Duration.ofHours(-1));
-        postWithBadRequest(film, "/films");
+        postWithBadRequest(film, FILMS_PATH);
+    }
+
+    @Test
+    public void getUsers() throws Exception {
+        postWithOkRequest(user, USERS_PATH);
+
+        JSONArray usersArray = new JSONArray();
+        usersArray.put(new JSONObject(mapper.writeValueAsString(user)));
+
+        mvc.perform(get(USERS_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(String.valueOf(usersArray)))
+                .andReturn();
+    }
+
+    @Test
+    public void getFilms() throws Exception {
+        postWithOkRequest(film, FILMS_PATH);
+        JSONArray filmsArray = new JSONArray();
+        filmsArray.put(new JSONObject(mapper.writeValueAsString(film)));
+
+        mvc.perform(get(FILMS_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(String.valueOf(filmsArray)))
+                .andReturn();
     }
 
     private <T> void postWithOkRequest(T object, String path) throws Exception {
