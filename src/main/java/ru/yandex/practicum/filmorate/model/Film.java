@@ -1,30 +1,35 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.time.DurationMin;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@RequiredArgsConstructor()
 public class Film {
-    @NonNull
-    //@Positive
-    private final int id;
-    @NonNull
+    @NotNull
+    private int id;
+
+    @NotNull
     @NotBlank
-    private final String name;
-    @NonNull
+    private String name;
+
+    @NotNull
     @NotBlank
-    @Size(min = 1, max = 200)
-    private final String description;
+    @Size(max = 200)
+    private String description;
+
+    @NotNull
     @Past
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
+
+    @NotNull
     @DurationMin(nanos = 0)
-    private final Duration duration;
+    private Duration duration;
 }

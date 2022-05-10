@@ -15,13 +15,10 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    //Хранилище пользователей
     Map<Integer, User> userStorage = new HashMap<>();
 
-    //Логгер
     private final static Logger log = LoggerFactory.getLogger(UserController.class);
 
-    //Создание пользователя
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.debug(user.getName() + "added to userStorage");
@@ -29,7 +26,6 @@ public class UserController {
         return user;
     }
 
-    //Обновление пользователя - исправить
     @PutMapping
     public User update(@Valid @RequestBody User user) {
         log.debug(user.getName() + "updated in userStorage");
@@ -37,7 +33,6 @@ public class UserController {
         return user;
     }
 
-    //Получение списка всех пользователей
     @GetMapping
     public List<User> userList() {
         return new ArrayList<>(userStorage.values());

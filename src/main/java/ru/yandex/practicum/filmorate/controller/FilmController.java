@@ -21,13 +21,10 @@ public class FilmController {
 
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
-    //Хранилище фильмов
     Map<Integer, Film> filmStorage = new HashMap<>();
 
-    //Логгер
     private final static Logger log = LoggerFactory.getLogger(FilmController.class);
 
-    //Добавление фильма
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         if (film.getReleaseDate().isAfter(CINEMA_BIRTH_DATE)) {
@@ -40,7 +37,6 @@ public class FilmController {
         return film;
     }
 
-    //Обновление фильма - исправить
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         if (film.getReleaseDate().isAfter(CINEMA_BIRTH_DATE)) {
@@ -53,7 +49,6 @@ public class FilmController {
         return film;
     }
 
-    //Получение списка всех фильмов
     @GetMapping
     public List<Film> filmList() {
         return new ArrayList<>(filmStorage.values());
