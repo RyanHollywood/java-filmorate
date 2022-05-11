@@ -30,12 +30,12 @@ class UserTest {
 
     @Test
     void getLogin() {
-        Assertions.assertEquals("login", user.getLogin());
+        Assertions.assertEquals("userLogin", user.getLogin());
     }
 
     @Test
     void getName() {
-        Assertions.assertEquals(null, user.getLogin());
+        Assertions.assertEquals(null, user.getName());
     }
 
     @Test
@@ -83,7 +83,7 @@ class UserTest {
     @Test
     void canEqual() {
         User sameUser = new User(1, "user@mail.ru", "sameLogin", "sameUser",  LocalDate.of(1990, 01, 01));
-        Assertions.assertFalse(user.canEqual(sameUser));
+        Assertions.assertTrue(user.canEqual(sameUser));
     }
 
     @Test
