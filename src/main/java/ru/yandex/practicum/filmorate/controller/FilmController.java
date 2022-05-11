@@ -20,7 +20,7 @@ public class FilmController {
 
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
-    Map<Integer, Film> filmStorage = new HashMap<>();
+    private Map<Integer, Film> filmStorage = new HashMap<>();
 
     private final static Logger log = LoggerFactory.getLogger(FilmController.class);
 
