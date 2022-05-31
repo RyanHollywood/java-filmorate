@@ -39,7 +39,7 @@ class FilmorateApplicationTests {
 
     @BeforeEach
     public void reloadModels() {
-        user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
+        user = new User(1l,"user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
         film = new Film(1, "Film", "Film description", LocalDate.now().minusDays(1), Duration.ofHours(1));
     }
 

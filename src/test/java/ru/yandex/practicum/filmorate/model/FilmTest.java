@@ -97,6 +97,6 @@ class FilmTest {
 
     @Test
     void testToString() {
-        assertEquals("Film(id=1, name=Film, description=Film description, releaseDate=1895-12-29, duration=PT1H)", film.toString());
+        assertEquals("Film(id=1, name=Film, description=Film description, releaseDate=1895-12-29, duration=PT1H, likes=[])", film.toString());
     }
 }

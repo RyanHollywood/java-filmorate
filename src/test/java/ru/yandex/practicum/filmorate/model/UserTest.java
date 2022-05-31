@@ -15,12 +15,7 @@ class UserTest {
 
     @BeforeEach
     void reloadUser() {
-        user = new User(1, "user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
-    }
-
-    @Test
-    void getId() {
-        Assertions.assertEquals(1, user.getId());
+        user = new User(1L,"user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
     }
 
     @Test
@@ -35,7 +30,11 @@ class UserTest {
 
     @Test
     void getName() {
-        Assertions.assertEquals(null, user.getName());
+        //null name
+        Assertions.assertEquals("userLogin", user.getName());
+        //blank name
+        user.setName("  ");
+        Assertions.assertEquals("userLogin", user.getName());
     }
 
     @Test
@@ -73,7 +72,7 @@ class UserTest {
 
     @Test
     void testEquals() {
-        User sameUser = new User(1, "user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
+        User sameUser = new User(1L,"user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
         assertEquals(user, sameUser);
 
         sameUser.setName("sameUser");
@@ -82,13 +81,13 @@ class UserTest {
 
     @Test
     void canEqual() {
-        User sameUser = new User(1, "user@mail.ru", "sameLogin", "sameUser",  LocalDate.of(1990, 01, 01));
+        User sameUser = new User(1L, "user@mail.ru", "sameLogin", "sameUser",  LocalDate.of(1990, 01, 01));
         Assertions.assertTrue(user.canEqual(sameUser));
     }
 
     @Test
     void testHashCode() {
-        User sameUser = new User(1, "user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
+        User sameUser = new User(1L, "user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
         Assertions.assertEquals(user.hashCode(), sameUser.hashCode());
 
         sameUser.setName("sameUser");
@@ -97,6 +96,6 @@ class UserTest {
 
     @Test
     void testToString() {
-        assertEquals("User(id=1, email=user@mail.ru, login=userLogin, name=null, birthday=1990-01-01)", user.toString());
+        assertEquals("User(email=user@mail.ru, login=userLogin, name=userLogin, birthday=1990-01-01, friends=[])", user.toString());
     }
 }

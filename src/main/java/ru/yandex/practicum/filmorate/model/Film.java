@@ -1,17 +1,19 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.time.DurationMin;
+import org.springframework.boot.convert.DurationFormat;
+import org.springframework.boot.convert.DurationUnit;
 
 import javax.validation.constraints.*;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@AllArgsConstructor
-@RequiredArgsConstructor()
+//@AllArgsConstructor
 public class Film {
     @NotNull
     private int id;
@@ -32,4 +34,27 @@ public class Film {
     @NotNull
     @DurationMin(nanos = 0)
     private Duration duration;
+
+    private Set<Long> likes;
+
+    public Film(int id, String name, String description, LocalDate releaseDate, Duration duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        likes = new HashSet<>();
+    }
+
+    public void addLike(Long id) {
+        likes.add(id);
+    }
+
+    public void deleteLike(Long id) {
+        likes.remove(id);
+    }
+
+    public boolean containsLike(Long id) {
+        return likes.contains(id);
+    }
 }
