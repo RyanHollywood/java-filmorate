@@ -23,13 +23,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void add(Long id, User user) {
-        userMap.put(id, user);
+    public void add(User user) {
+        userMap.put(user.getId(), user);
     }
 
     @Override
-    public void update(Long id, User user) {
-        userMap.put(id, user);
+    public void update(User user) {
+        userMap.replace(user.getId(), user);
     }
 
     @Override

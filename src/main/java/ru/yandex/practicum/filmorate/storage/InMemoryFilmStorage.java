@@ -10,10 +10,10 @@ import java.util.Map;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private Map<Integer, Film> filmMap = new HashMap<>();
+    private Map<Long, Film> filmMap = new HashMap<>();
 
     @Override
-    public Film get(int id) {
+    public Film get(long id) {
         return filmMap.get(id);
     }
 
@@ -32,7 +32,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         filmMap.remove(id);
     }
 
@@ -42,7 +42,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public boolean contains(int id) {
+    public boolean contains(long id) {
         return filmMap.containsKey(id);
     }
 }

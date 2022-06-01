@@ -28,7 +28,7 @@ public class FilmService {
         this.filmStorage = filmStorage;
     }
 
-    public Film getFilm(int id) {
+    public Film getFilm(long id) {
         if (!filmStorage.contains(id)) {
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
@@ -55,7 +55,7 @@ public class FilmService {
         filmStorage.update(film);
     }
 
-    public void deleteFilm(int id) {
+    public void deleteFilm(long id) {
         if (!filmStorage.contains(id)) {
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
@@ -67,14 +67,14 @@ public class FilmService {
         filmStorage.deleteAll();
     }
 
-    public void addLike(int filmId, long userId) {
+    public void addLike(long filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         filmStorage.get(filmId).addLike(userId);
     }
 
-    public void deleteLike(int filmId, long userId) {
+    public void deleteLike(long filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }

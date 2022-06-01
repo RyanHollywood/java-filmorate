@@ -34,17 +34,17 @@ public class UserService {
 
     public void addUser(User user) {
         user.setId(getNewId());
-        userStorage.add(user.getId(), user);
+        userStorage.add(user);
     }
 
     public void updateUser(User user) {
         if (!userStorage.contains(user.getId())) {
             throw new NoSuchUserException("There is no such user");
         }
-        userStorage.update(user.getId(), user);
+        userStorage.update(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(long id) {
         if (!userStorage.contains(id)) {
             throw new NoSuchUserException("There is no such user");
         }

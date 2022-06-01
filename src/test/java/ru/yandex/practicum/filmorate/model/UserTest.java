@@ -14,8 +14,8 @@ class UserTest {
     private User user;
 
     @BeforeEach
-    void reloadUser() {
-        user = new User(1L,"user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
+    void reload() {
+        user = new User(1,"user@mail.ru", "userLogin", null,  LocalDate.of(1990, 01, 01));
     }
 
     @Test

@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface FilmStorage {
 
-    Film get(int id);
+    Film get(long id);
 
     Collection<Film> getAll();
 
@@ -14,9 +14,9 @@ public interface FilmStorage {
 
     void update(Film film);
 
-    void delete(int id);
+    void delete(long id);
 
     void deleteAll();
 
-    boolean contains(int id);
+    boolean contains(long id);
 }

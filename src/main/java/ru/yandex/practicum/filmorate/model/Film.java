@@ -16,7 +16,7 @@ import java.util.Set;
 //@AllArgsConstructor
 public class Film {
     @NotNull
-    private int id;
+    private long id;
 
     @NotNull
     @NotBlank
@@ -37,7 +37,7 @@ public class Film {
 
     private Set<Long> likes;
 
-    public Film(int id, String name, String description, LocalDate releaseDate, Duration duration) {
+    public Film(long id, String name, String description, LocalDate releaseDate, Duration duration) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -10,9 +10,9 @@ public interface UserStorage {
 
     Collection<User> getAll();
 
-    void add(Long id, User user);
+    void add(User user);
 
-    void update(Long id, User user);
+    void update(User user);
 
     void delete(Long id);
 

@@ -14,7 +14,7 @@ class FilmTest {
     private Film film;
 
     @BeforeEach
-    void reloadFilm() {
+    void reload() {
         film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
     }
 
