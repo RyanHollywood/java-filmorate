@@ -38,6 +38,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public void deleteAll() {
+        userMap.clear();
+    }
+
+    @Override
     public boolean contains(Long id) {
         return userMap.containsKey(id);
     }

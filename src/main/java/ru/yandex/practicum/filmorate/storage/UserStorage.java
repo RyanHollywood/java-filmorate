@@ -16,5 +16,7 @@ public interface UserStorage {
 
     void delete(Long id);
 
+    void deleteAll();
+
     boolean contains(Long id);
 }

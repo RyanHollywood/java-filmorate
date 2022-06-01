@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
@@ -18,9 +19,14 @@ public class FilmService {
 
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
-    private InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
+    private InMemoryFilmStorage filmStorage;
 
     private int idCounter = 1;
+
+    @Autowired
+    public FilmService(InMemoryFilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
+    }
 
     public Film getFilm(int id) {
         if (!filmStorage.contains(id)) {
@@ -56,6 +62,11 @@ public class FilmService {
         filmStorage.delete(id);
     }
 
+    public void deleteAll() {
+        idCounter = 1;
+        filmStorage.deleteAll();
+    }
+
     public void addLike(int filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
             throw new NoSuchFilmException("There is no such film. Check id please!");
@@ -81,9 +92,7 @@ public class FilmService {
                 return -1;
             }
         });
-        for (Film film : filmStorage.getAll()) {
-            popular.add(film);
-        }
+        popular.addAll(filmStorage.getAll());
         return popular.stream()
                 .limit(counter)
                 .collect(Collectors.toSet());

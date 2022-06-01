@@ -16,5 +16,7 @@ public interface FilmStorage {
 
     void delete(int id);
 
+    void deleteAll();
+
     boolean contains(int id);
 }

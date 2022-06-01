@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,7 +14,12 @@ public class UserService {
 
     private long idCounter = 1;
 
-    private InMemoryUserStorage userStorage = new InMemoryUserStorage();
+    private InMemoryUserStorage userStorage;
+
+    @Autowired
+    public UserService(InMemoryUserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     public User getUser(Long id) {
         if (!userStorage.contains(id)) {
@@ -43,6 +49,11 @@ public class UserService {
             throw new NoSuchUserException("There is no such user");
         }
         userStorage.delete(id);
+    }
+
+    public void deleteAll() {
+        idCounter = 1;
+        userStorage.deleteAll();
     }
 
     public void addFriend(long id, long friendId) {

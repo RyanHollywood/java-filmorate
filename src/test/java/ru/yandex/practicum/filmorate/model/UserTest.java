@@ -96,6 +96,6 @@ class UserTest {
 
     @Test
     void testToString() {
-        assertEquals("User(email=user@mail.ru, login=userLogin, name=userLogin, birthday=1990-01-01, friends=[])", user.toString());
+        assertEquals("User(id=1, email=user@mail.ru, login=userLogin, name=userLogin, birthday=1990-01-01, friends=[])", user.toString());
     }
 }

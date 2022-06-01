@@ -17,8 +17,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.Duration;
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -143,6 +142,8 @@ class FilmorateApplicationTests {
 
     @Test
     public void getUsers() throws Exception {
+        mvc.perform(delete(USERS_PATH));
+
         postWithOkRequest(user, USERS_PATH);
 
         JSONArray usersArray = new JSONArray();
@@ -157,6 +158,8 @@ class FilmorateApplicationTests {
 
     @Test
     public void getFilms() throws Exception {
+        mvc.perform(delete(FILMS_PATH));
+
         postWithOkRequest(film, FILMS_PATH);
 
         JSONArray filmsArray = new JSONArray();
