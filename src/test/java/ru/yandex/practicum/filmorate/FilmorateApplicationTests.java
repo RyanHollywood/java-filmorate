@@ -40,7 +40,7 @@ class FilmorateApplicationTests {
     public void reloadModels() throws Exception {
         mvc.perform(delete(USERS_PATH));
         mvc.perform(delete(FILMS_PATH));
-        user = new User(1,"user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
+        user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
         film = new Film(1, "Film", "Film description", LocalDate.now().minusDays(1), Duration.ofHours(1));
     }
 
@@ -225,6 +225,7 @@ class FilmorateApplicationTests {
                 .andExpect(status().isNotFound())
                 .andReturn();
     }
+
     private <T> void putWithNotFound(T object, String path) throws Exception {
         mvc.perform(put(path)
                         .contentType(MediaType.APPLICATION_JSON)

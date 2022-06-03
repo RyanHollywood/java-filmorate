@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.TreeSet;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryUserStorageTest {
 
@@ -24,7 +24,7 @@ class InMemoryUserStorageTest {
     @Test
     void addAndGet() {
         userStorage.add(user);
-        Assertions.assertEquals(user, userStorage.get(user.getId()));
+        assertEquals(user, userStorage.get(user.getId()));
     }
 
     @Test
@@ -52,7 +52,7 @@ class InMemoryUserStorageTest {
         });
         actual.addAll(userStorage.getAll());
 
-        Assertions.assertArrayEquals(excpected.toArray(), actual.toArray());
+        assertArrayEquals(excpected.toArray(), actual.toArray());
     }
 
     @Test
@@ -60,14 +60,14 @@ class InMemoryUserStorageTest {
         User updatedUser = new User(1, "updatedUser@mail.ru", "updatedUserLogin", null, LocalDate.of(1990, 01, 01));
         userStorage.add(user);
         userStorage.update(updatedUser);
-        Assertions.assertEquals(updatedUser, userStorage.get(user.getId()));
+        assertEquals(updatedUser, userStorage.get(user.getId()));
     }
 
     @Test
     void delete() {
         userStorage.add(user);
         userStorage.delete(user.getId());
-        Assertions.assertNull(userStorage.get(user.getId()));
+        assertNull(userStorage.get(user.getId()));
     }
 
     @Test
@@ -76,12 +76,12 @@ class InMemoryUserStorageTest {
         userStorage.add(user);
         userStorage.add(anotherUser);
         userStorage.deleteAll();
-        Assertions.assertEquals("[]", userStorage.getAll().toString());
+        assertEquals("[]", userStorage.getAll().toString());
     }
 
     @Test
     void contains() {
         userStorage.add(user);
-        Assertions.assertTrue(userStorage.contains(user.getId()));
+        assertTrue(userStorage.contains(user.getId()));
     }
 }

@@ -1,11 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -28,7 +25,7 @@ class InMemoryFilmStorageTest {
     @Test
     void addAndGet() {
         filmStorage.add(film);
-        Assertions.assertEquals(film, filmStorage.get(film.getId()));
+        assertEquals(film, filmStorage.get(film.getId()));
     }
 
     @Test
@@ -56,7 +53,7 @@ class InMemoryFilmStorageTest {
         });
         actual.addAll(filmStorage.getAll());
 
-        Assertions.assertArrayEquals(excpected.toArray(), actual.toArray());
+        assertArrayEquals(excpected.toArray(), actual.toArray());
     }
 
     @Test
@@ -64,14 +61,14 @@ class InMemoryFilmStorageTest {
         Film updatedFilm = new Film(1, "UpdatedFilm", "UpdatedFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
         filmStorage.add(film);
         filmStorage.update(updatedFilm);
-        Assertions.assertEquals(updatedFilm, filmStorage.get(film.getId()));
+        assertEquals(updatedFilm, filmStorage.get(film.getId()));
     }
 
     @Test
     void delete() {
         filmStorage.add(film);
         filmStorage.delete(film.getId());
-        Assertions.assertNull(filmStorage.get(film.getId()));
+        assertNull(filmStorage.get(film.getId()));
     }
 
     @Test
@@ -80,12 +77,12 @@ class InMemoryFilmStorageTest {
         filmStorage.add(film);
         filmStorage.add(anotherFilm);
         filmStorage.deleteAll();
-        Assertions.assertEquals("[]", filmStorage.getAll().toString());
+        assertEquals("[]", filmStorage.getAll().toString());
     }
 
     @Test
     void contains() {
         filmStorage.add(film);
-        Assertions.assertTrue(filmStorage.contains(film.getId()));
+        assertTrue(filmStorage.contains(film.getId()));
     }
 }

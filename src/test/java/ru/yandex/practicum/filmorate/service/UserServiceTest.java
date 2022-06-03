@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.junit.jupiter.api.Assertions;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
@@ -8,8 +8,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.TreeSet;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@Slf4j
 class UserServiceTest {
 
     private UserService userService;
@@ -23,14 +28,14 @@ class UserServiceTest {
     }
 
     @Test
-    void AddAndGetUser() {
-        NoSuchUserException exception = Assertions.assertThrows(NoSuchUserException.class, () ->
+    void addAndGetUser() {
+        NoSuchUserException exception = assertThrows(NoSuchUserException.class, () ->
                 userService.getUser(user.getId())
         );
-        Assertions.assertEquals("There is no such user", exception.getMessage());
+        assertEquals("There is no such user", exception.getMessage());
 
         userService.addUser(user);
-        Assertions.assertEquals(user, userService.getUser(1L));
+        assertEquals(user, userService.getUser(1L));
     }
 
     @Test
@@ -58,30 +63,30 @@ class UserServiceTest {
         });
         actual.addAll(userService.getAll());
 
-        Assertions.assertArrayEquals(excpected.toArray(), actual.toArray());
+        assertArrayEquals(excpected.toArray(), actual.toArray());
     }
 
     @Test
     void updateUser() {
         User updatedUser = new User(1, "updatedUser@mail.ru", "updatedUserLogin", null, LocalDate.of(1990, 01, 01));
-        NoSuchUserException exception = Assertions.assertThrows(NoSuchUserException.class, () ->
+        NoSuchUserException exception = assertThrows(NoSuchUserException.class, () ->
                 userService.updateUser(updatedUser)
         );
-        Assertions.assertEquals("There is no such user", exception.getMessage());
+        assertEquals("There is no such user", exception.getMessage());
 
         userService.addUser(user);
         userService.updateUser(updatedUser);
-        Assertions.assertEquals(updatedUser, userService.getUser(user.getId()));
+        assertEquals(updatedUser, userService.getUser(user.getId()));
     }
 
     @Test
     void deleteUser() {
         userService.addUser(user);
         userService.deleteUser(user.getId());
-        NoSuchUserException exception = Assertions.assertThrows(NoSuchUserException.class, () ->
+        NoSuchUserException exception = assertThrows(NoSuchUserException.class, () ->
                 userService.getUser(user.getId())
         );
-        Assertions.assertEquals("There is no such user", exception.getMessage());
+        assertEquals("There is no such user", exception.getMessage());
     }
 
     @Test
@@ -90,7 +95,7 @@ class UserServiceTest {
         userService.addUser(user);
         userService.addUser(anotherUser);
         userService.deleteAll();
-        Assertions.assertEquals("[]", userService.getAll().toString());
+        assertEquals("[]", userService.getAll().toString());
     }
 
     @Test
@@ -99,7 +104,7 @@ class UserServiceTest {
         userService.addUser(user);
         userService.addUser(anotherUser);
         userService.addFriend(user.getId(), anotherUser.getId());
-        Assertions.assertEquals(List.of(anotherUser), userService.getFriends(user.getId()));
+        assertEquals(List.of(anotherUser), userService.getFriends(user.getId()));
     }
 
     @Test
@@ -112,7 +117,7 @@ class UserServiceTest {
         userService.addFriend(user.getId(), anotherUser.getId());
         userService.addFriend(user.getId(), anotherOneUser.getId());
         userService.deleteFriend(user.getId(), anotherOneUser.getId());
-        Assertions.assertEquals(List.of(anotherUser), userService.getFriends(user.getId()));
+        assertEquals(List.of(anotherUser), userService.getFriends(user.getId()));
     }
 
     @Test
@@ -125,6 +130,6 @@ class UserServiceTest {
         userService.addFriend(user.getId(), anotherUser.getId());
         userService.addFriend(user.getId(), anotherOneUser.getId());
         userService.addFriend(anotherUser.getId(), anotherOneUser.getId());
-        Assertions.assertEquals(List.of(anotherOneUser), userService.getCommonFriends(user.getId(), anotherUser.getId()));
+        assertEquals(List.of(anotherOneUser), userService.getCommonFriends(user.getId(), anotherUser.getId()));
     }
 }

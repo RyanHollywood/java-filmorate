@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FilmService {
 
@@ -30,57 +32,72 @@ public class FilmService {
 
     public Film getFilm(long id) {
         if (!filmStorage.contains(id)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + id + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
+        log.debug("GET REQUEST SUCCESSFUL - FILM WITH ID:" + id + " FOUND");
         return filmStorage.get(id);
     }
 
     public Collection<Film> getAll() {
+        log.debug("GET REQUEST SUCCESSFUL - GET ALL FILM");
         return filmStorage.getAll();
     }
 
     public void addFilm(Film film) {
         if (film.getReleaseDate().isBefore(CINEMA_BIRTH_DATE)) {
+            log.warn("POST REQUEST UNSUCCESSFUL - FILM " + film.getName() + " SHOULD HAVE RELEASE DATE AFTER " + CINEMA_BIRTH_DATE);
             throw new FilmValidationException("Film release date should be after " +
                     CINEMA_BIRTH_DATE.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "!");
         }
         film.setId(getNewId());
         filmStorage.add(film);
+        log.debug("POST REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " CREATED");
     }
 
     public void updateFilm(Film film) {
         if (!filmStorage.contains(film.getId())) {
+            log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + film.getId() + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         filmStorage.update(film);
+        log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " UPDATED");
     }
 
     public void deleteFilm(long id) {
         if (!filmStorage.contains(id)) {
+            log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + id + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         filmStorage.delete(id);
+        log.debug("DELETE REQUEST SUCCESSFUL - FILM WITH ID:" + id + " DELETED");
     }
 
     public void deleteAll() {
         idCounter = 1;
         filmStorage.deleteAll();
+        log.debug("DELETE REQUEST SUCCESSFUL - ALL FILMS DELETED - ID COUNTER RESET");
     }
 
     public void addLike(long filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
+            log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND - CANNOT ADD LIKE FROM USER ID:" + userId);
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         filmStorage.get(filmId).addLike(userId);
+        log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + filmId + " LIKED BY USER WITH ID:" + userId);
     }
 
     public void deleteLike(long filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
+            log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         if (!filmStorage.get(filmId).containsLike(userId)) {
+            log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " FOUND");
             throw new LikeNotFoundException("Like not found");
         }
+        log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
         filmStorage.get(filmId).deleteLike(userId);
     }
 
@@ -93,6 +110,7 @@ public class FilmService {
             }
         });
         popular.addAll(filmStorage.getAll());
+        log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
         return popular.stream()
                 .limit(counter)
                 .collect(Collectors.toSet());
