@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-//@AllArgsConstructor
 public class Film {
     @NotNull
     private long id;
