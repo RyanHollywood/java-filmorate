@@ -1,7 +1,7 @@
 # java-filmorate
 ## ER DIAGRAM
-![Filmorate (5)](https://user-images.githubusercontent.com/97036914/172924678-3531933a-1334-457b-96b5-b1b2f805e9f9.png)
 
+![Filmorate (8)](https://user-images.githubusercontent.com/97036914/173231658-6bdcf7ed-4720-4d78-837d-2c231edec785.png)
 
 
 ## SQL requests examples
