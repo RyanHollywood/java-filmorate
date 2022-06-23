@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Duration;
@@ -41,7 +43,8 @@ class FilmorateApplicationTests {
         mvc.perform(delete(USERS_PATH));
         mvc.perform(delete(FILMS_PATH));
         user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
-        film = new Film(1, "Film", "Film description", LocalDate.now().minusDays(1), Duration.ofHours(1));
+        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
     }
 
     @Test
@@ -98,7 +101,7 @@ class FilmorateApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsBytes(user)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(mapper.writeValueAsString(user)))
                 .andReturn();
     }
@@ -183,7 +186,7 @@ class FilmorateApplicationTests {
 
         mvc.perform(get(USERS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(String.valueOf(usersArray)))
                 .andReturn();
     }
@@ -197,7 +200,7 @@ class FilmorateApplicationTests {
 
         mvc.perform(get(FILMS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(String.valueOf(filmsArray)))
                 .andReturn();
     }
@@ -209,6 +212,20 @@ class FilmorateApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(object)))
                 .andReturn();
+
+        /*
+
+        MvcResult result = mvc.perform(get(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsBytes(object)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        String content = result.getRequest().getContentAsString();
+
+        Assertions.assertEquals(mapper.writeValueAsString(object), content);
+         */
     }
 
     private <T> void postWithBadRequest(T object, String path) throws Exception {

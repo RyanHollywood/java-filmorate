@@ -34,14 +34,22 @@ public class Film {
     @DurationMin(nanos = 0)
     private Duration duration;
 
+    @NotNull
+    private Mpa mpa;
+
+    @NotNull
+    private Genre[] genres;
+
     private Set<Long> likes;
 
-    public Film(long id, String name, String description, LocalDate releaseDate, Duration duration) {
+    public Film(long id, String name, String description, LocalDate releaseDate, Duration duration, Mpa mpa, Genre[] genres) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
         likes = new HashSet<>();
     }
 
