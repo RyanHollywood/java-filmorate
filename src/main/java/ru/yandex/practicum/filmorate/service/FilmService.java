@@ -2,12 +2,13 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,12 +22,12 @@ public class FilmService {
 
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
-    private InMemoryFilmStorage filmStorage;
+    private FilmStorage filmStorage;
 
     private int idCounter = 1;
 
     @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 

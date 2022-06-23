@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 
+@Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
     @Override
     public User get(Long id) {
