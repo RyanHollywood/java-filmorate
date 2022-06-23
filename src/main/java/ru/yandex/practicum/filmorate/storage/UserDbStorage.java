@@ -1,13 +1,21 @@
-package ru.yandex.practicum.filmorate.storage.dao;
+package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.sql.Date;
 import java.util.Collection;
 
 @Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public UserDbStorage(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate=jdbcTemplate;
+    }
+
     @Override
     public User get(Long id) {
         return null;
@@ -20,7 +28,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void add(User user) {
-
+        jdbcTemplate.update("INSERT INTO USERS(ID, EMAIL, LOGIN, NAME, BIRTHDAY) VALUES(?, ?, ?, ?, ?)",
+                user.getId(), user.getEmail(), user.getLogin(), user.getName(), Date.valueOf(user.getBirthday()));
     }
 
     @Override

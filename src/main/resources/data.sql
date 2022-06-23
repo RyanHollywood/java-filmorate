@@ -1,4 +1,4 @@
-INSERT INTO GENRES(ID, GENRE)
+MERGE INTO GENRES(ID, GENRE)
 VALUES (1, 'Комедия'),
        (2, 'Драма'),
        (3, 'Мультфильм'),
@@ -6,7 +6,7 @@ VALUES (1, 'Комедия'),
        (5, 'Документальный'),
        (6, 'Боевик');
 
-INSERT INTO MPA(ID, RATING)
+MERGE INTO MPA(ID, RATING)
 VALUES (1, 'G'),
        (2, 'PG'),
        (3, 'PG-13'),
