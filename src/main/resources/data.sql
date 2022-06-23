@@ -6,7 +6,7 @@ VALUES (1, 'Комедия'),
        (5, 'Документальный'),
        (6, 'Боевик');
 
-INSERT INTO RATINGS(ID, RATING)
+INSERT INTO MPA(ID, RATING)
 VALUES (1, 'G'),
        (2, 'PG'),
        (3, 'PG-13'),
