@@ -32,7 +32,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public Collection<Film> filmList() {
+    public Collection<Film> getAllFilms() {
         return filmService.getAll();
     }
 

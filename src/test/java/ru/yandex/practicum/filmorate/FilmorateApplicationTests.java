@@ -212,20 +212,6 @@ class FilmorateApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content().string(mapper.writeValueAsString(object)))
                 .andReturn();
-
-        /*
-
-        MvcResult result = mvc.perform(get(path)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(object)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        String content = result.getRequest().getContentAsString();
-
-        Assertions.assertEquals(mapper.writeValueAsString(object), content);
-         */
     }
 
     private <T> void postWithBadRequest(T object, String path) throws Exception {

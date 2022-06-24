@@ -1,9 +1,10 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.dao;
 
 import ch.qos.logback.core.util.Duration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -35,12 +36,12 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void update(Film film) {
-
+        jdbcTemplate.update("INSERT INTO FILMS(ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA) VALUES(?, ?, ?, ?, ?, ?)",
+                film.getId(), film.getName(), film.getDescription(), Date.valueOf(film.getReleaseDate()), film.getDuration(), film.getMpa().getId());
     }
 
     @Override
     public void delete(long id) {
-
     }
 
     @Override

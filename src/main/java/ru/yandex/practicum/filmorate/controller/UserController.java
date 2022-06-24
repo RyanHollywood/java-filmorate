@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<User> userList() {
+    public Collection<User> getAllUsers() {
         return userService.getAll();
     }
 
