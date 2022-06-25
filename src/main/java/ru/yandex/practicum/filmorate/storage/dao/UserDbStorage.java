@@ -59,7 +59,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.execute("DROP TABLE films");
+        //jdbcTemplate.execute("DROP TABLE users");
+        jdbcTemplate.execute("DELETE FROM users");
     }
 
     @Override

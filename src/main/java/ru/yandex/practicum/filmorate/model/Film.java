@@ -35,7 +35,6 @@ public class Film {
     @DurationMin(nanos = 0)
     private Duration duration;
 
-    @NotNull
     private Mpa mpa;
 
     private TreeSet<Genre> genres;

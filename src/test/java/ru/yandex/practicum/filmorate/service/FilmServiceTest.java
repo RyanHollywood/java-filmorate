@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.Duration;
@@ -26,7 +24,7 @@ class FilmServiceTest {
     void reload() {
         filmService = new FilmService(new InMemoryFilmStorage());
         film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
     }
 
     @Test
@@ -43,7 +41,7 @@ class FilmServiceTest {
     @Test
     void getAll() {
         Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         filmService.addFilm(film);
         filmService.addFilm(anotherFilm);
 
@@ -71,7 +69,7 @@ class FilmServiceTest {
     @Test
     void updateFilm() {
         Film updatedFilm = new Film(1, "UpdatedFilm", "UpdatedFilm description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         NoSuchFilmException exception = assertThrows(NoSuchFilmException.class, () ->
                 filmService.updateFilm(updatedFilm)
         );
@@ -95,7 +93,7 @@ class FilmServiceTest {
     @Test
     void deleteAll() {
         Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         filmService.addFilm(film);
         filmService.addFilm(anotherFilm);
         filmService.deleteAll();
@@ -130,7 +128,7 @@ class FilmServiceTest {
         filmService.addLike(film.getId(), anotherUserId);
 
         Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         filmService.addFilm(anotherFilm);
         filmService.addLike(anotherFilm.getId(), userId);
 

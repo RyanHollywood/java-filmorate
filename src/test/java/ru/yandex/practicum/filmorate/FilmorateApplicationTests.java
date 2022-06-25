@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -43,8 +42,8 @@ class FilmorateApplicationTests {
         mvc.perform(delete(USERS_PATH));
         mvc.perform(delete(FILMS_PATH));
         user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
-        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+        film = new Film(1, "Film", "Film description", LocalDate.of(1995, 12, 27),
+                Duration.ofHours(1), new Mpa(1, "G"));
     }
 
     @Test
@@ -197,6 +196,7 @@ class FilmorateApplicationTests {
 
         JSONArray filmsArray = new JSONArray();
         filmsArray.put(new JSONObject(mapper.writeValueAsString(film)));
+
 
         mvc.perform(get(FILMS_PATH))
                 .andExpect(status().isOk())

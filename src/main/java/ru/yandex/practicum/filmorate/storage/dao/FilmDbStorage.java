@@ -67,7 +67,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.execute("DROP TABLE films");
+        //jdbcTemplate.execute("DROP TABLE films");
+        jdbcTemplate.execute("DELETE FROM films");
     }
 
     @Override

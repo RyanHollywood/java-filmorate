@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -22,7 +20,7 @@ class InMemoryFilmStorageTest {
     void reload() {
         filmStorage = new InMemoryFilmStorage();
         film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
     }
 
     @Test
@@ -34,7 +32,7 @@ class InMemoryFilmStorageTest {
     @Test
     void getAll() {
         Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         filmStorage.add(film);
         filmStorage.add(anotherFilm);
 
@@ -63,7 +61,7 @@ class InMemoryFilmStorageTest {
     @Test
     void update() {
         Film updatedFilm = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         filmStorage.add(film);
         filmStorage.update(updatedFilm);
         assertEquals(updatedFilm, filmStorage.get(film.getId()));
@@ -79,7 +77,7 @@ class InMemoryFilmStorageTest {
     @Test
     void deleteAll() {
         Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
-                Duration.ofHours(1), new Mpa(1, "G"), new Genre[] {new Genre(1, "Комедия"), new Genre(2, "Драма")});
+                Duration.ofHours(1), null);
         filmStorage.add(film);
         filmStorage.add(anotherFilm);
         filmStorage.deleteAll();
