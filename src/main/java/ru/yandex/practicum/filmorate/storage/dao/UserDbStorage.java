@@ -31,10 +31,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> getAll() {
         //String response = "SELECT * FROM users;";
-        String response = "SELECT * FROM users;";
+        String response = "SELECT * FROM users LIMIT 1;";
         return jdbcTemplate.query(response, (rs, rowNum) -> new User(
-                //rs.getLong("id"),
-                (rs.getLong("id") + 1),
+                rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("login"),
                 rs.getString("name"),
