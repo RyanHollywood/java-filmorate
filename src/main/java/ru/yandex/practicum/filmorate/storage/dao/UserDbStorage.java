@@ -75,7 +75,8 @@ public class UserDbStorage implements UserStorage {
         if (response.next()) {
             return response.getLong("id") + 1;
         }
-        return 1;
+        //return 1;
+        return 0;
     }
 
     @Override
