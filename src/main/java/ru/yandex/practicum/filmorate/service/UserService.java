@@ -6,17 +6,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Slf4j
 @Service
 public class UserService {
-
-    private long idCounter = 1;
 
     private UserStorage userStorage;
 
@@ -64,7 +60,7 @@ public class UserService {
     }
 
     public void deleteAll() {
-        idCounter = 1;
+        userStorage.resetId();
         userStorage.deleteAll();
         log.debug("DELETE REQUEST SUCCESSFUL - ALL USERS DELETED - ID COUNTER RESET");
     }
@@ -74,8 +70,10 @@ public class UserService {
             log.warn("PUT REQUEST UNSUCCESSFUL - " + "ONE OF USERS ID:" + id + " AND ID:" + friendId + "NOT FOUND - CANNOT MAKE FRIENDS");
             throw new NoSuchUserException("There is no such user");
         }
-        userStorage.get(id).addFriend(friendId);
-        userStorage.get(friendId).addFriend(id);
+        //userStorage.get(id).addFriend(friendId);
+        //userStorage.get(friendId).addFriend(id);
+
+        userStorage.addFriend(id, friendId);
         log.debug("PUT REQUEST SUCCESSFUL - " + "MAKE USERS ID:" + id + " AND ID:" + friendId +  " FRIENDS SUCCESSFUL");
     }
 
@@ -84,31 +82,41 @@ public class UserService {
             log.warn("DELETE REQUEST UNSUCCESSFUL - " + "ONE OF USERS ID:" + id + " AND ID:" + friendId + "NOT FOUND - CANNOT DELETE FRIEND");
             throw new NoSuchUserException("There is no such user");
         }
-        userStorage.get(id).deleteFriend(friendId);
+        //userStorage.get(id).deleteFriend(friendId);
+
+        userStorage.deleteFriend(id, friendId);
         log.debug("DELETE REQUEST SUCCESSFUL - " + "USERS ID:" + id + " AND ID:" + friendId + " ARE NOT FRIENDS");
     }
 
     public Collection<User> getFriends(long id) {
+
+        /*
         Collection<User> friends = new ArrayList<>();
         for (long friend : userStorage.get(id).getFriends()) {
             friends.add(userStorage.get(friend));
         }
+         */
+
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USER ID:" + id + " FRIENDS");
-        return friends;
+        return userStorage.getFriends(id);
     }
 
     public Collection<User> getCommonFriends(long id, long friendId) {
+
+        /*
         Collection<User> commonFriends = new ArrayList<>();
         for (long friend : userStorage.get(id).getFriends()) {
             if (userStorage.get(friendId).getFriends().contains(friend)) {
                 commonFriends.add(userStorage.get(friend));
             }
         }
+         */
+
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USERS ID:" + id + " AND ID:" + friendId + " COMMON FRIENDS");
-        return commonFriends;
+        return userStorage.getCommonFriends(id, friendId);
     }
 
     private long getNewId() {
-        return idCounter++;
+        return userStorage.getNewId();
     }
 }

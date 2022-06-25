@@ -24,8 +24,6 @@ public class FilmService {
 
     private FilmStorage filmStorage;
 
-    private int idCounter = 1;
-
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
@@ -45,7 +43,7 @@ public class FilmService {
         return filmStorage.getAll();
     }
 
-    public void addFilm(Film film) {
+    public Film addFilm(Film film) {
         if (film.getReleaseDate().isBefore(CINEMA_BIRTH_DATE)) {
             log.warn("POST REQUEST UNSUCCESSFUL - FILM " + film.getName() + " SHOULD HAVE RELEASE DATE AFTER " + CINEMA_BIRTH_DATE);
             throw new FilmValidationException("Film release date should be after " +
@@ -54,15 +52,17 @@ public class FilmService {
         film.setId(getNewId());
         filmStorage.add(film);
         log.debug("POST REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " CREATED");
+        return film;
     }
 
-    public void updateFilm(Film film) {
+    public Film updateFilm(Film film) {
         if (!filmStorage.contains(film.getId())) {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + film.getId() + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         filmStorage.update(film);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " UPDATED");
+        return film;
     }
 
     public void deleteFilm(long id) {
@@ -75,7 +75,7 @@ public class FilmService {
     }
 
     public void deleteAll() {
-        idCounter = 1;
+        filmStorage.resetId();
         filmStorage.deleteAll();
         log.debug("DELETE REQUEST SUCCESSFUL - ALL FILMS DELETED - ID COUNTER RESET");
     }
@@ -85,7 +85,8 @@ public class FilmService {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND - CANNOT ADD LIKE FROM USER ID:" + userId);
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
-        filmStorage.get(filmId).addLike(userId);
+        //filmStorage.get(filmId).addLike(userId);
+        filmStorage.addLike(filmId, userId);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + filmId + " LIKED BY USER WITH ID:" + userId);
     }
 
@@ -94,12 +95,14 @@ public class FilmService {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
-        if (!filmStorage.get(filmId).containsLike(userId)) {
-            log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " FOUND");
+        //if (!filmStorage.get(filmId).containsLike(userId)) {
+        if (!filmStorage.containsLike(filmId, userId)) {
+            log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + " FROM USER ID:" + userId + " FOUND");
             throw new LikeNotFoundException("Like not found");
         }
+        //filmStorage.get(filmId).deleteLike(userId);
+        filmStorage.deleteLike(filmId, userId);
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
-        filmStorage.get(filmId).deleteLike(userId);
     }
 
     public Collection<Film> getPopularByCounter(int counter) {
@@ -117,7 +120,7 @@ public class FilmService {
                 .collect(Collectors.toSet());
     }
 
-    private int getNewId() {
-        return idCounter++;
+    private long getNewId() {
+        return filmStorage.getNewId();
     }
 }

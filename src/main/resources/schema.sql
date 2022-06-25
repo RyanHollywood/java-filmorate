@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS friends_status (
 
 CREATE TABLE IF NOT EXISTS friends (
     request_id BIGINT NOT NULL,
-    responce_id BIGINT NOT NULL,
+    response_id BIGINT NOT NULL,
     status_id INTEGER NOT NULL,
-    CONSTRAINT friends_pk PRIMARY KEY (request_id, responce_id),
+    CONSTRAINT friends_pk PRIMARY KEY (request_id, response_id),
     CONSTRAINT request_id_fk FOREIGN KEY (request_id) REFERENCES users(id),
-    CONSTRAINT responce_id_fk FOREIGN KEY (responce_id) REFERENCES users(id),
+    CONSTRAINT response_id_fk FOREIGN KEY (response_id) REFERENCES users(id),
     CONSTRAINT status_fk FOREIGN KEY (status_id) REFERENCES friends_status(status_id)
 );
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS films (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(200) NOT NULL,
     release_date DATE NOT NULL,
-    duration INTERVAL SECOND(18) NOT NULL,
+    duration BIGINT NOT NULL,
     mpa_id INTEGER NOT NULL,
     CONSTRAINT films_pk PRIMARY KEY (id),
     CONSTRAINT mpa_fk FOREIGN KEY (mpa_id) REFERENCES mpa(mpa_id)

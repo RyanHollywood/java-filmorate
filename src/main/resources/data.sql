@@ -12,3 +12,6 @@ VALUES (1, 'G'),
        (3, 'PG-13'),
        (4, 'R'),
        (5, 'NC-17');
+
+MERGE INTO friends_status(status_id, status_name)
+VALUES (1, 'CONFIRMED');

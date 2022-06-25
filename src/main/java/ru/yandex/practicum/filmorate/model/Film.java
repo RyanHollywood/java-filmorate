@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class Film {
@@ -37,19 +38,17 @@ public class Film {
     @NotNull
     private Mpa mpa;
 
-    @NotNull
-    private Genre[] genres;
+    private TreeSet<Genre> genres;
 
     private Set<Long> likes;
 
-    public Film(long id, String name, String description, LocalDate releaseDate, Duration duration, Mpa mpa, Genre[] genres) {
+    public Film(long id, String name, String description, LocalDate releaseDate, Duration duration, Mpa mpa) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-        this.genres = genres;
         likes = new HashSet<>();
     }
 

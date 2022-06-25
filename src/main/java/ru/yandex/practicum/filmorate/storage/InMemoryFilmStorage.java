@@ -12,6 +12,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private Map<Long, Film> filmMap = new HashMap<>();
 
+    private long idCounter = 1;
+
     @Override
     public Film get(long id) {
         return filmMap.get(id);
@@ -45,5 +47,30 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public boolean contains(long id) {
         return filmMap.containsKey(id);
+    }
+
+    @Override
+    public long getNewId() {
+        return idCounter++;
+    }
+
+    @Override
+    public void resetId() {
+        idCounter = 1;
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+        filmMap.get(filmId).addLike(userId);
+    }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        filmMap.get(filmId).deleteLike(userId);
+    }
+
+    @Override
+    public boolean containsLike(long filmId, long userId) {
+        return filmMap.get(filmId).containsLike(userId);
     }
 }
