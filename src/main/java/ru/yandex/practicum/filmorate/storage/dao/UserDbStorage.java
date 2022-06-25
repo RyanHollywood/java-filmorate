@@ -31,7 +31,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> getAll() {
         //String response = "SELECT * FROM users;";
-        String response = "SELECT * FROM users LIMIT 1;";
+        String response = "SELECT * FROM users ORDER BY ID DESC LIMIT 1;";
         return jdbcTemplate.query(response, (rs, rowNum) -> new User(
                 rs.getLong("id"),
                 rs.getString("email"),
