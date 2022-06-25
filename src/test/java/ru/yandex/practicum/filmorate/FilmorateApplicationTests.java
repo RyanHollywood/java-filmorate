@@ -183,6 +183,9 @@ class FilmorateApplicationTests {
         postWithOkRequest(user, USERS_PATH);
 
         JSONArray usersArray = new JSONArray();
+
+        user.setId(user.getId() + 1);
+
         usersArray.put(new JSONObject(mapper.writeValueAsString(user)));
 
         mvc.perform(get(USERS_PATH))
