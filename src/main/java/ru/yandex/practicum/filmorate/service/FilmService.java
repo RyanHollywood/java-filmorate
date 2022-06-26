@@ -86,7 +86,6 @@ public class FilmService {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND - CANNOT ADD LIKE FROM USER ID:" + userId);
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
-        //filmStorage.get(filmId).addLike(userId);
         filmStorage.addLike(filmId, userId);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + filmId + " LIKED BY USER WITH ID:" + userId);
     }
@@ -96,12 +95,10 @@ public class FilmService {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
-        //if (!filmStorage.get(filmId).containsLike(userId)) {
         if (!filmStorage.containsLike(filmId, userId)) {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + " FROM USER ID:" + userId + " FOUND");
             throw new LikeNotFoundException("Like not found");
         }
-        //filmStorage.get(filmId).deleteLike(userId);
         filmStorage.deleteLike(filmId, userId);
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }

@@ -42,7 +42,6 @@ class FilmorateApplicationTests {
         mvc.perform(delete(USERS_PATH));
         mvc.perform(delete(FILMS_PATH));
         //user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
-
         user = new User(0, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
         film = new Film(1, "Film", "Film description", LocalDate.of(1995, 12, 27),
                 Duration.ofHours(1), new Mpa(1, "G"));

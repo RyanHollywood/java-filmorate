@@ -71,9 +71,6 @@ public class UserService {
             log.warn("PUT REQUEST UNSUCCESSFUL - " + "ONE OF USERS ID:" + id + " AND ID:" + friendId + "NOT FOUND - CANNOT MAKE FRIENDS");
             throw new NoSuchUserException("There is no such user");
         }
-        //userStorage.get(id).addFriend(friendId);
-        //userStorage.get(friendId).addFriend(id);
-
         userStorage.addFriend(id, friendId);
         log.debug("PUT REQUEST SUCCESSFUL - " + "MAKE USERS ID:" + id + " AND ID:" + friendId +  " FRIENDS SUCCESSFUL");
     }
@@ -83,36 +80,16 @@ public class UserService {
             log.warn("DELETE REQUEST UNSUCCESSFUL - " + "ONE OF USERS ID:" + id + " AND ID:" + friendId + "NOT FOUND - CANNOT DELETE FRIEND");
             throw new NoSuchUserException("There is no such user");
         }
-        //userStorage.get(id).deleteFriend(friendId);
-
         userStorage.deleteFriend(id, friendId);
         log.debug("DELETE REQUEST SUCCESSFUL - " + "USERS ID:" + id + " AND ID:" + friendId + " ARE NOT FRIENDS");
     }
 
     public Collection<User> getFriends(long id) {
-
-        /*
-        Collection<User> friends = new ArrayList<>();
-        for (long friend : userStorage.get(id).getFriends()) {
-            friends.add(userStorage.get(friend));
-        }
-         */
-
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USER ID:" + id + " FRIENDS");
         return userStorage.getFriends(id);
     }
 
     public Collection<User> getCommonFriends(long id, long friendId) {
-
-        /*
-        Collection<User> commonFriends = new ArrayList<>();
-        for (long friend : userStorage.get(id).getFriends()) {
-            if (userStorage.get(friendId).getFriends().contains(friend)) {
-                commonFriends.add(userStorage.get(friend));
-            }
-        }
-         */
-
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USERS ID:" + id + " AND ID:" + friendId + " COMMON FRIENDS");
         return userStorage.getCommonFriends(id, friendId);
     }
