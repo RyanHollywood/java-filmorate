@@ -13,8 +13,6 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -104,18 +102,8 @@ public class FilmService {
     }
 
     public Collection<Film> getPopularByCounter(int counter) {
-        Collection<Film> popular = new TreeSet<>((film1, film2) -> {
-            if (film1.getLikes().size() < film2.getLikes().size()) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-        popular.addAll(filmStorage.getAll());
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return popular.stream()
-                .limit(counter)
-                .collect(Collectors.toSet());
+        return filmStorage.getPopular(counter);
     }
 
     private long getNewId() {

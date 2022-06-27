@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
@@ -22,6 +24,21 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Collection<Film> getAll() {
         return filmMap.values();
+    }
+
+    @Override
+    public Collection<Film> getPopular(int quantity) {
+        Collection<Film> popular = new TreeSet<>((film1, film2) -> {
+            if (film1.getLikes().size() < film2.getLikes().size()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        popular.addAll(filmMap.values());
+        return popular.stream()
+                .limit(quantity)
+                .collect(Collectors.toSet());
     }
 
     @Override

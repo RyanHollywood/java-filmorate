@@ -10,6 +10,8 @@ public interface FilmStorage {
 
     Collection<Film> getAll();
 
+    Collection<Film> getPopular(int quantity);
+
     void add(Film film);
 
     void update(Film film);

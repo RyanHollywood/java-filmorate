@@ -11,9 +11,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.*;
 
 
 @Component("filmDbStorage")
@@ -37,8 +35,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAll() {
-        String response = "SELECT * FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id;";
-        return jdbcTemplate.query(response, (rs, rowNum) -> new Film(
+        String request = "SELECT * FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id;";
+        return jdbcTemplate.query(request, (rs, rowNum) -> new Film(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("description"),
@@ -46,6 +44,20 @@ public class FilmDbStorage implements FilmStorage {
                 Duration.ofSeconds(rs.getLong("duration")),
                 new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")))
         );
+    }
+
+    @Override
+    public Collection<Film> getPopular(int quantity) {
+        Collection<Film> popular = new HashSet<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, COUNT (l.user_id) " +
+                "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id LEFT JOIN likes AS l ON f.id = l.film_id GROUP BY f.id ORDER BY COUNT (l.user_id) DESC LIMIT ?;", quantity);
+        while(response.next()) {
+            Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
+                    LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
+                    new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            popular.add(film);
+        }
+        return popular;
     }
 
     @Override
