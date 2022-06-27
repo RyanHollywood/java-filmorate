@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -23,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+
 class FilmorateApplicationTests {
 
     private User user;
@@ -41,8 +46,7 @@ class FilmorateApplicationTests {
     public void reloadModels() throws Exception {
         mvc.perform(delete(USERS_PATH));
         mvc.perform(delete(FILMS_PATH));
-        //user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
-        user = new User(0, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
+        user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
         film = new Film(1, "Film", "Film description", LocalDate.of(1995, 12, 27),
                 Duration.ofHours(1), new Mpa(1, "G"));
     }
