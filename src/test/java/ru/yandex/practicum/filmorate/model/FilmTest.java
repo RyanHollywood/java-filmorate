@@ -13,7 +13,8 @@ class FilmTest {
 
     @BeforeEach
     void reload() {
-        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
     }
 
     @Test
@@ -71,7 +72,8 @@ class FilmTest {
 
     @Test
     void testEquals() {
-        Film sameFilm = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film sameFilm = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         assertTrue(film.equals(sameFilm));
 
         sameFilm.setName("Same film");
@@ -80,13 +82,15 @@ class FilmTest {
 
     @Test
     void canEqual() {
-        Film sameFilm = new Film(1, "Same film", "Same description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film sameFilm = new Film(1, "Same film", "Same description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         assertTrue(film.canEqual(sameFilm));
     }
 
     @Test
     void testHashCode() {
-        Film sameFilm = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film sameFilm = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         assertEquals(film.hashCode(), sameFilm.hashCode());
 
         sameFilm.setName("Same film");
@@ -95,6 +99,6 @@ class FilmTest {
 
     @Test
     void testToString() {
-        assertEquals("Film(id=1, name=Film, description=Film description, releaseDate=1895-12-29, duration=PT1H, likes=[])", film.toString());
+        assertEquals("Film(id=1, name=Film, description=Film description, releaseDate=1895-12-29, duration=PT1H, mpa=null, genres=null, likes=[])", film.toString());
     }
 }

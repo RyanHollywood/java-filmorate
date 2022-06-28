@@ -2,18 +2,17 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,12 +20,11 @@ public class FilmService {
 
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
-    private InMemoryFilmStorage filmStorage;
-
-    private int idCounter = 1;
+    private FilmStorage filmStorage;
 
     @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
+    //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -44,7 +42,7 @@ public class FilmService {
         return filmStorage.getAll();
     }
 
-    public void addFilm(Film film) {
+    public Film addFilm(Film film) {
         if (film.getReleaseDate().isBefore(CINEMA_BIRTH_DATE)) {
             log.warn("POST REQUEST UNSUCCESSFUL - FILM " + film.getName() + " SHOULD HAVE RELEASE DATE AFTER " + CINEMA_BIRTH_DATE);
             throw new FilmValidationException("Film release date should be after " +
@@ -53,15 +51,17 @@ public class FilmService {
         film.setId(getNewId());
         filmStorage.add(film);
         log.debug("POST REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " CREATED");
+        return film;
     }
 
-    public void updateFilm(Film film) {
+    public Film updateFilm(Film film) {
         if (!filmStorage.contains(film.getId())) {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + film.getId() + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
         filmStorage.update(film);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " UPDATED");
+        return film;
     }
 
     public void deleteFilm(long id) {
@@ -74,7 +74,7 @@ public class FilmService {
     }
 
     public void deleteAll() {
-        idCounter = 1;
+        filmStorage.resetId();
         filmStorage.deleteAll();
         log.debug("DELETE REQUEST SUCCESSFUL - ALL FILMS DELETED - ID COUNTER RESET");
     }
@@ -84,7 +84,7 @@ public class FilmService {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND - CANNOT ADD LIKE FROM USER ID:" + userId);
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
-        filmStorage.get(filmId).addLike(userId);
+        filmStorage.addLike(filmId, userId);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + filmId + " LIKED BY USER WITH ID:" + userId);
     }
 
@@ -93,30 +93,20 @@ public class FilmService {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND");
             throw new NoSuchFilmException("There is no such film. Check id please!");
         }
-        if (!filmStorage.get(filmId).containsLike(userId)) {
-            log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " FOUND");
+        if (!filmStorage.containsLike(filmId, userId)) {
+            log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + " FROM USER ID:" + userId + " FOUND");
             throw new LikeNotFoundException("Like not found");
         }
+        filmStorage.deleteLike(filmId, userId);
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
-        filmStorage.get(filmId).deleteLike(userId);
     }
 
     public Collection<Film> getPopularByCounter(int counter) {
-        Collection<Film> popular = new TreeSet<>((film1, film2) -> {
-            if (film1.getLikes().size() < film2.getLikes().size()) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-        popular.addAll(filmStorage.getAll());
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return popular.stream()
-                .limit(counter)
-                .collect(Collectors.toSet());
+        return filmStorage.getPopular(counter);
     }
 
-    private int getNewId() {
-        return idCounter++;
+    private long getNewId() {
+        return filmStorage.getNewId();
     }
 }

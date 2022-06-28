@@ -10,6 +10,8 @@ public interface FilmStorage {
 
     Collection<Film> getAll();
 
+    Collection<Film> getPopular(int quantity);
+
     void add(Film film);
 
     void update(Film film);
@@ -19,4 +21,14 @@ public interface FilmStorage {
     void deleteAll();
 
     boolean contains(long id);
+
+    long getNewId();
+
+    void resetId();
+
+    void addLike(long filmId, long userId);
+
+    void deleteLike(long filmId, long userId);
+
+    boolean containsLike(long filmId, long userId);
 }

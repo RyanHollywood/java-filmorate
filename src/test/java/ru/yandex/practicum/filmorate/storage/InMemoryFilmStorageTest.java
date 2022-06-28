@@ -19,7 +19,8 @@ class InMemoryFilmStorageTest {
     @BeforeEach
     void reload() {
         filmStorage = new InMemoryFilmStorage();
-        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
     }
 
     @Test
@@ -30,7 +31,8 @@ class InMemoryFilmStorageTest {
 
     @Test
     void getAll() {
-        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         filmStorage.add(film);
         filmStorage.add(anotherFilm);
 
@@ -58,7 +60,8 @@ class InMemoryFilmStorageTest {
 
     @Test
     void update() {
-        Film updatedFilm = new Film(1, "UpdatedFilm", "UpdatedFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film updatedFilm = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         filmStorage.add(film);
         filmStorage.update(updatedFilm);
         assertEquals(updatedFilm, filmStorage.get(film.getId()));
@@ -73,7 +76,8 @@ class InMemoryFilmStorageTest {
 
     @Test
     void deleteAll() {
-        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         filmStorage.add(film);
         filmStorage.add(anotherFilm);
         filmStorage.deleteAll();

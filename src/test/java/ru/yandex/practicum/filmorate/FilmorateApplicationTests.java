@@ -1,16 +1,19 @@
 package ru.yandex.practicum.filmorate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Duration;
@@ -22,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+
 class FilmorateApplicationTests {
 
     private User user;
@@ -41,7 +47,8 @@ class FilmorateApplicationTests {
         mvc.perform(delete(USERS_PATH));
         mvc.perform(delete(FILMS_PATH));
         user = new User(1, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
-        film = new Film(1, "Film", "Film description", LocalDate.now().minusDays(1), Duration.ofHours(1));
+        film = new Film(1, "Film", "Film description", LocalDate.of(1995, 12, 27),
+                Duration.ofHours(1), new Mpa(1, "G"));
     }
 
     @Test
@@ -98,7 +105,7 @@ class FilmorateApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsBytes(user)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(mapper.writeValueAsString(user)))
                 .andReturn();
     }
@@ -179,11 +186,12 @@ class FilmorateApplicationTests {
         postWithOkRequest(user, USERS_PATH);
 
         JSONArray usersArray = new JSONArray();
+
         usersArray.put(new JSONObject(mapper.writeValueAsString(user)));
 
         mvc.perform(get(USERS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(String.valueOf(usersArray)))
                 .andReturn();
     }
@@ -195,9 +203,10 @@ class FilmorateApplicationTests {
         JSONArray filmsArray = new JSONArray();
         filmsArray.put(new JSONObject(mapper.writeValueAsString(film)));
 
+
         mvc.perform(get(FILMS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(String.valueOf(filmsArray)))
                 .andReturn();
     }

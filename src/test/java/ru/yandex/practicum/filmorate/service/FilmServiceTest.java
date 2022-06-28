@@ -23,7 +23,8 @@ class FilmServiceTest {
     @BeforeEach
     void reload() {
         filmService = new FilmService(new InMemoryFilmStorage());
-        film = new Film(1L, "Film", "Film description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
     }
 
     @Test
@@ -34,12 +35,13 @@ class FilmServiceTest {
         assertEquals("There is no such film. Check id please!", exception.getMessage());
 
         filmService.addFilm(film);
-        assertEquals(film, filmService.getFilm(1L));
+        assertEquals(film, filmService.getFilm(1));
     }
 
     @Test
     void getAll() {
-        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         filmService.addFilm(film);
         filmService.addFilm(anotherFilm);
 
@@ -66,7 +68,8 @@ class FilmServiceTest {
 
     @Test
     void updateFilm() {
-        Film updatedFilm = new Film(1, "UpdatedFilm", "UpdatedFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film updatedFilm = new Film(1, "UpdatedFilm", "UpdatedFilm description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         NoSuchFilmException exception = assertThrows(NoSuchFilmException.class, () ->
                 filmService.updateFilm(updatedFilm)
         );
@@ -89,7 +92,8 @@ class FilmServiceTest {
 
     @Test
     void deleteAll() {
-        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         filmService.addFilm(film);
         filmService.addFilm(anotherFilm);
         filmService.deleteAll();
@@ -123,7 +127,8 @@ class FilmServiceTest {
         filmService.addLike(film.getId(), userId);
         filmService.addLike(film.getId(), anotherUserId);
 
-        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29), Duration.ofHours(1));
+        Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
+                Duration.ofHours(1), null);
         filmService.addFilm(anotherFilm);
         filmService.addLike(anotherFilm.getId(), userId);
 
