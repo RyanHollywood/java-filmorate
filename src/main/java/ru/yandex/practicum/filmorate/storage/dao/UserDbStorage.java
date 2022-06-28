@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -105,23 +106,17 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getCommonFriends(long id, long friendId) {
-        return findCommon(getFriends(id), getFriends(friendId));
-    }
-
-    private Collection<User> findCommon(Collection<User> user, Collection<User> friend) {
-        Collection<User> commonFriends = new HashSet<>();
-        if (user.size() >= friend.size()) {
-            for (User common : user) {
-                if(friend.contains(common)) {
-                    commonFriends.add(common);
-                }
-            }
-        } else {
-            for (User common : friend) {
-                if(user.contains(common)) {
-                    commonFriends.add(common);
-                }
-            }
+        String request = "SELECT fr.response_id, u.email, u.login, u.name, u.birthday, COUNT (response_id) " +
+                "FROM friends AS fr " +
+                "LEFT OUTER JOIN users AS u ON fr.response_id = u.id " +
+                "WHERE request_id = ? OR request_id = ? " +
+                "GROUP BY response_id " +
+                "HAVING COUNT (response_id) > 1;";
+        SqlRowSet response = jdbcTemplate.queryForRowSet(request, id, friendId);
+        Collection<User> commonFriends = new ArrayList<>();
+        while(response.next()) {
+            commonFriends.add(new User(response.getLong("response_id"), response.getString("email"), response.getString("login"),
+                    response.getString("name"), LocalDate.parse(response.getString("birthday"))));
         }
         return commonFriends;
     }
