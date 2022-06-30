@@ -44,4 +44,16 @@ public class ErrorHandler {
     public String handleIncorrectParameterException(final NoSuchGenreException exception) {
         return exception.getMessage();
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleIncorrectParameterException(final NoSuchDirectorException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleIncorrectParameterException(final NoSuchSortingItemFound exception) {
+        return exception.getMessage();
+    }
 }
