@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
@@ -24,7 +26,7 @@ public class FilmService {
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
-    //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
+        //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -101,9 +103,9 @@ public class FilmService {
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }
 
-    public Collection<Film> getPopularByCounter(int counter) {
+    public Collection<Film> getPopularByCounter(int counter,Integer year,Integer genreId) {
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return filmStorage.getPopular(counter);
+        return filmStorage.getPopular(counter,year,genreId);
     }
 
     private long getNewId() {
