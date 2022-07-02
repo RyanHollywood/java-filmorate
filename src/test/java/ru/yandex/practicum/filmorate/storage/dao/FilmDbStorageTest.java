@@ -44,7 +44,7 @@ class FilmDbStorageTest {
         Genre genre = new Genre(1, "Комедия");
         genres.add(genre);
         film.setGenres(genres);
-        filmDbStorage.addGenres(film);
+        //filmDbStorage.addGenres(film);
         filmService.addFilm(film);
 
         film = new Film(2, "Ремба средняя кровь", "Test",
@@ -53,7 +53,7 @@ class FilmDbStorageTest {
 
         genres.add(genre);
         film.setGenres(genres);
-        filmDbStorage.addGenres(film);
+        //filmDbStorage.addGenres(film);
         filmService.addFilm(film);
 
         film = new Film(3, "Ремба последняя", "Test",
