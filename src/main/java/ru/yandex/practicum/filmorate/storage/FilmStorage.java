@@ -13,6 +13,10 @@ public interface FilmStorage {
 
     Collection<Film> getPopular(int counter,Integer year,Integer genreId);
 
+    Collection<Film> getByDirectorByLikes(int directorId);
+
+    Collection<Film> getByDirectorByYear(int directorId);
+
     void add(Film film);
 
     void update(Film film);
