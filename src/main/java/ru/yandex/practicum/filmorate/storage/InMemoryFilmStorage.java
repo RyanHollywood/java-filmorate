@@ -90,4 +90,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public boolean containsLike(long filmId, long userId) {
         return filmMap.get(filmId).containsLike(userId);
     }
+
+    @Override
+    public Collection<Film> getCommon(long userId, long friendId) {
+        return null;
+    }
 }

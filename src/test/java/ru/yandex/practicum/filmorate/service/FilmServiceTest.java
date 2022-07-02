@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ class FilmServiceTest {
 
     @BeforeEach
     void reload() {
-        filmService = new FilmService(new InMemoryFilmStorage());
+        filmService = new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage());
         film = new Film(1, "Film", "Film description", LocalDate.of(1895, 12, 29),
                 Duration.ofHours(1), null);
     }

@@ -147,4 +147,22 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update("MERGE INTO films(id, name, description, release_date, duration, mpa_id) VALUES(?, ?, ?, ?, ?, ?)",
                 film.getId(), film.getName(), film.getDescription(), Date.valueOf(film.getReleaseDate()), film.getDuration().getSeconds(), film.getMpa().getId());
     }
+
+    public Collection<Film> getCommon(long userId, long friendId) {
+        Collection<Film> commonFilms = new HashSet<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films INNER JOIN mpa ON films.mpa_id = mpa.mpa_id " +
+                "WHERE id IN (SELECT film_id FROM likes WHERE film_id IN " +
+                "(SELECT id FROM films WHERE id IN (SELECT ul.film_id FROM " +
+                "(SELECT * FROM likes WHERE user_id = ?) as ul " +
+                "INNER JOIN (SELECT * FROM likes WHERE user_id = ?) as ul1 on ul.film_id = ul1.film_id)) " +
+                "GROUP BY id ORDER BY COUNT(id) DESC);", userId, friendId);
+        while (response.next()) {
+            Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
+                    LocalDate.parse(Objects.requireNonNull(response.getString("release_date"))), Duration.ofSeconds(response.getLong(
+                    "duration")),
+                    new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            commonFilms.add(film);
+        }
+        return commonFilms;
+    }
 }

@@ -31,4 +31,6 @@ public interface FilmStorage {
     void deleteLike(long filmId, long userId);
 
     boolean containsLike(long filmId, long userId);
+
+    Collection<Film> getCommon(long userId, long friendId);
 }
