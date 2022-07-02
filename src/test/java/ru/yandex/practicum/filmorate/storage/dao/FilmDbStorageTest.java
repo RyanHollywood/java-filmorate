@@ -1,29 +1,17 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmDbStorageTest {
+
+    /*
+
 
     private final FilmService filmService;
     private final FilmDbStorage filmDbStorage;
@@ -69,10 +57,6 @@ class FilmDbStorageTest {
 
         assertEquals(films.size(), 2);
 
-        /**
-         * Получаем фильм ТОЛЬКО по ЖАНРУ
-        Размер коллекции должен быть равен 2м, т.к у 3го фильма другой жанр
-         **/
     }
 
     @Test
@@ -94,10 +78,7 @@ class FilmDbStorageTest {
         Collection<Film> films = filmService.getPopularByCounter(10,1990,1);
 
         assertEquals(films.size(), 2);
-
-        /**
-         * Получаем фильм ТОЛЬКО по ГОДУ
-         Размер коллекции должен быть равен 2м, т.к у 3го фильма другой год выпуска
-         **/
     }
+
+     */
 }

@@ -174,11 +174,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void addLike(long filmId, long userId) {
         jdbcTemplate.update("MERGE INTO likes(user_id, film_id) VALUES (?, ?);", userId, filmId);
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", userId, filmId, "LIKE", "ADD", System.currentTimeMillis());
     }
 
     @Override
     public void deleteLike(long filmId, long userId) {
         jdbcTemplate.update("DELETE FROM likes WHERE user_id=? AND film_id =?", userId, filmId);
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", userId, filmId, "LIKE", "REMOVE", System.currentTimeMillis());
     }
 
     @Override

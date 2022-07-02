@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -16,8 +17,13 @@ public class InMemoryUserStorage implements UserStorage {
     private long idCounter = 1;
 
     @Override
-    public User get(Long id) {
+    public User get(long id) {
         return userMap.get(id);
+    }
+
+    @Override
+    public Collection<Event> getFeed(long id) {
+        return null;
     }
 
     @Override
@@ -36,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(long id) {
         userMap.remove(id);
     }
 
@@ -46,7 +52,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean contains(Long id) {
+    public boolean contains(long id) {
         return userMap.containsKey(id);
     }
 

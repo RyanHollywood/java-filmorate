@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 public class Director implements Comparable<Director>{
     @NotNull
     private int id;
+
     @NotBlank
     private String name;
 

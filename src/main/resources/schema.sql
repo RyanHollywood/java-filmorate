@@ -7,6 +7,17 @@ CREATE TABLE IF NOT EXISTS users (
     CONSTRAINT users_pk PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS events (
+    event_id INTEGER NOT NULL AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    entity_id BIGINT NOT NULL,
+    event_type VARCHAR(255) NOT NULL,
+    operation VARCHAR(255) NOT NULL,
+    timestamp BIGINT NOT NULL,
+    CONSTRAINT events_pk PRIMARY KEY (event_id),
+    CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS friends_status (
     status_id INTEGER NOT NULL,
     status_name VARCHAR(255) NOT NULL,
