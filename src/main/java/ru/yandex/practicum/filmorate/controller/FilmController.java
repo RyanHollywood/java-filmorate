@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
@@ -65,8 +66,12 @@ public class FilmController {
         filmService.deleteLike(id, userId);
     }
 
-    @GetMapping("/popular")
-    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getPopularByCounter(count);
+   @GetMapping("/popular")
+    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count,
+                                       @RequestParam (defaultValue = "1894") Integer year,
+                                       @RequestParam (defaultValue = "0") Integer genreId
+   ) {
+        return filmService.getPopularByCounter(count,year,genreId);
     }
+
 }

@@ -23,7 +23,7 @@ public class FilmService {
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
-    //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
+        //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -100,9 +100,9 @@ public class FilmService {
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }
 
-    public Collection<Film> getPopularByCounter(int counter) {
+    public Collection<Film> getPopularByCounter(int counter,Integer year,Integer genreId) {
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return filmStorage.getPopular(counter);
+        return filmStorage.getPopular(counter,year,genreId);
     }
 
     public Collection<Film> getByDirectorSorted(int directorId, String sortBy) {

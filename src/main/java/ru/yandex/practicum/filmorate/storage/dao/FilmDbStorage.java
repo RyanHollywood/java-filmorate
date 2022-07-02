@@ -48,7 +48,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopular(int quantity) {
+    public Collection<Film> getPopular(int quantity, Integer year, Integer genreId) {
+        if(quantity==10&&year!=1894||genreId!=0){
+            return getPopularByGenresAndYear(year,genreId);
+        }
         Collection<Film> popular = new HashSet<>();
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, COUNT (l.user_id) " +
                 "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id LEFT JOIN likes AS l ON f.id = l.film_id GROUP BY f.id ORDER BY COUNT (l.user_id) DESC LIMIT ?;", quantity);
@@ -60,6 +63,41 @@ public class FilmDbStorage implements FilmStorage {
         }
         return popular;
     }
+
+    public Collection<Film> getPopularByGenresAndYear(Integer year, Integer genreId) {
+        Collection<Film> popular = new HashSet<>();
+        Integer yearNow = year;
+        int genreIdMax = genreId;
+        if (year==1894) {
+            yearNow = LocalDate.now().getYear();
+        }
+        else if (genreId==0){
+            genreIdMax = 6;
+        }
+        SqlRowSet response = jdbcTemplate.queryForRowSet("" +
+                        "SELECT " +
+                        "f.id, " +
+                        "f.name, " +
+                        "f.description, " +
+                        "f.release_date, " +
+                        "f.duration, " +
+                        "f.mpa_id, " +
+                        "m.mpa_name, " +
+                        "COUNT (g.film_id), " +
+                        "COUNT (l.user_id) " +
+                        "FROM films AS f " +
+                        "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
+                        "LEFT JOIN likes AS l ON f.id = l.film_id " +
+                        "right JOIN FILM_GENRES AS g ON f.id = g.FILM_ID " +
+                        "where extract(year from f.release_date)  between ? and ? and g.genre_id between ? and ? " +
+                        "GROUP BY f.id " +
+                        "ORDER BY COUNT (l.user_id) DESC;"
+                , year,yearNow, genreId,genreIdMax);
+        while (response.next()) {
+            Film film = get(response.getLong("id"));
+            popular.add(film);
+        }
+        return popular;
 
     public Collection<Film> getByDirectorByLikes(int directorId) {
         Collection<Film> sortedBylike = new ArrayList<>();

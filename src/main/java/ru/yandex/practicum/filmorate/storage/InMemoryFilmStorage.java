@@ -3,10 +3,8 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component("inMemoryFilmStorage")
@@ -27,7 +25,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopular(int quantity) {
+    public Collection<Film> getPopular(int quantity,Integer year,Integer genreId) {
         Collection<Film> popular = new TreeSet<>((film1, film2) -> {
             if (film1.getLikes().size() < film2.getLikes().size()) {
                 return 1;
@@ -40,6 +38,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .limit(quantity)
                 .collect(Collectors.toSet());
     }
+
 
     @Override
     public Collection<Film> getByDirectorByLikes(int directorId) {
@@ -100,4 +99,5 @@ public class InMemoryFilmStorage implements FilmStorage {
     public boolean containsLike(long filmId, long userId) {
         return filmMap.get(filmId).containsLike(userId);
     }
+
 }
