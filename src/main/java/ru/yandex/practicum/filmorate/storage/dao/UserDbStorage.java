@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 @Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
@@ -22,11 +24,23 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User get(Long id) {
+    public User get(long id) {
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE id=?;", id);
         response.next();
         return new User(response.getLong("id"), response.getString("email"), response.getString("login"),
                 response.getString("name"), LocalDate.parse(response.getString("birthday")));
+    }
+
+    @Override
+    public Collection<Event> getFeed(long id) {
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM events WHERE user_id = ?", id);
+        Collection<Event> events = new TreeSet<>();
+        while(response.next()) {
+            events.add(new Event(response.getInt("event_id"), response.getLong("user_id"),
+                    response.getLong("entity_id"), response.getString("event_type"),
+                    response.getString("operation"), response.getLong("timestamp")));
+        }
+        return events;
     }
 
     @Override
@@ -54,7 +68,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(long id) {
         jdbcTemplate.update("DELETE FROM users WHERE id=?", id);
     }
 
@@ -64,7 +78,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean contains(Long id) {
+    public boolean contains(long id) {
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE id=?", id);
         return response.next();
     }
@@ -86,11 +100,15 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void addFriend(long id, long friendId) {
         jdbcTemplate.update("MERGE INTO friends(request_id, response_id, status_id) VALUES (?, ?, ?);", id, friendId, 1);
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", id, friendId, "FRIEND", "ADD", System.currentTimeMillis());
     }
 
     @Override
     public void deleteFriend(long id, long friendId) {
         jdbcTemplate.update("DELETE FROM friends WHERE request_id=? AND response_id=?", id, friendId);
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", id, friendId, "FRIEND", "REMOVE", System.currentTimeMillis());
     }
 
     @Override

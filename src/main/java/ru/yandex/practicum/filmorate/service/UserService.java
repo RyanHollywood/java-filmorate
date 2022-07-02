@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -27,7 +28,7 @@ public class UserService {
         this.filmStorage = filmStorage;
     }
 
-    public User getUser(Long id) {
+    public User getUser(long id) {
         if (!userStorage.contains(id)) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + id + " FOUND");
             throw new NoSuchUserException("There is no such user");
@@ -90,13 +91,30 @@ public class UserService {
     }
 
     public Collection<User> getFriends(long id) {
+        if (!userStorage.contains(id)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + id + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USER ID:" + id + " FRIENDS");
         return userStorage.getFriends(id);
     }
 
     public Collection<User> getCommonFriends(long id, long friendId) {
+        if (!userStorage.contains(id) || !userStorage.contains(friendId)) {
+            log.warn("DELETE REQUEST UNSUCCESSFUL - " + "ONE OF USERS ID:" + id + " AND ID:" + friendId + "NOT FOUND - CANNOT DELETE FRIEND");
+            throw new NoSuchUserException("There is no such user");
+        }
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USERS ID:" + id + " AND ID:" + friendId + " COMMON FRIENDS");
         return userStorage.getCommonFriends(id, friendId);
+    }
+
+    public Collection<Event> getFeed(long id) {
+        if (!userStorage.contains(id)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER FEED WITH ID:" + id + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        log.debug("GET REQUEST SUCCESSFUL - USER FEED WITH ID:" + id + " FOUND");
+        return userStorage.getFeed(id);
     }
 
     private long getNewId() {

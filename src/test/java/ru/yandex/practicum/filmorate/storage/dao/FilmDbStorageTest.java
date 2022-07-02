@@ -25,10 +25,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmDbStorageTest {
 
+    /*
+
+
     private final FilmService filmService;
     private final FilmDbStorage filmDbStorage;
 
-   /* @Test
+
+    @Test
     void getPopularByGenres() {
         TreeSet<Genre> genres = new TreeSet<>();
 
@@ -68,8 +72,8 @@ class FilmDbStorageTest {
 
         assertEquals(films.size(), 2);
 
-    }*/
-/*
+    }
+
     @Test
     void getPopularByYear() {
         Film film = new Film(14, "Ремба первая кровь", "Test",
@@ -89,6 +93,7 @@ class FilmDbStorageTest {
         Collection<Film> films = filmService.getPopularByCounter(10,1990,1);
 
         assertEquals(films.size(), 2);
+    }
 
-    }*/
+     */
 }
