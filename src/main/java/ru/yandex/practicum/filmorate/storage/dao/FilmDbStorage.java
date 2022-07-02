@@ -55,6 +55,7 @@ public class FilmDbStorage implements FilmStorage {
             Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                     LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                     new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            getGenres(film);
             popular.add(film);
         }
         return popular;
