@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.service.DirectorService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-
 @RestController
 @RequestMapping("/directors")
 public class DirectorController {
