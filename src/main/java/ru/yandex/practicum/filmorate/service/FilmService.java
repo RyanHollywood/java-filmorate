@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -100,16 +101,16 @@ public class FilmService {
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }
 
-    public Collection<Film> getPopularByCounter(int counter,Integer year,Integer genreId) {
+    public Collection<Film> getPopularByCounter(int counter, Integer year, Integer genreId) {
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return filmStorage.getPopular(counter,year,genreId);
+        return filmStorage.getPopular(counter, year, genreId);
     }
 
     public Collection<Film> getByDirectorSorted(int directorId, String sortBy) {
         Collection<Film> sortedFilms = new ArrayList<>();
-        if(sortBy.equals("year")) {
+        if (sortBy.equals("year")) {
             sortedFilms = filmStorage.getByDirectorByYear(directorId);
-        } else if(sortBy.equals("likes")) {
+        } else if (sortBy.equals("likes")) {
             sortedFilms = filmStorage.getByDirectorByLikes(directorId);
         } else {
             log.warn("GET REQUEST UNSUCCESSFUL - NO SORTING OPTION: " + sortBy + " FOUND");
@@ -121,6 +122,11 @@ public class FilmService {
         }
         log.debug("GET REQUEST SUCCESSFUL - GET DIRECTOR ID:" + directorId + " FILMS SORTED BY " + sortBy);
         return sortedFilms;
+    }
+
+    public Collection<Film> searchFilm(String query, String by) {
+        log.debug("GET REQUEST SUCCESSFUL - GET " + by + " MOST SEARCH FILMS");
+        return filmStorage.searchFilm(query, by);
     }
 
     private long getNewId() {

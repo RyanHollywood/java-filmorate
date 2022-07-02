@@ -28,8 +28,7 @@ class FilmDbStorageTest {
     private final FilmService filmService;
     private final FilmDbStorage filmDbStorage;
 
-
-    @Test
+   /* @Test
     void getPopularByGenres() {
         TreeSet<Genre> genres = new TreeSet<>();
 
@@ -69,12 +68,8 @@ class FilmDbStorageTest {
 
         assertEquals(films.size(), 2);
 
-        /**
-         * Получаем фильм ТОЛЬКО по ЖАНРУ
-        Размер коллекции должен быть равен 2м, т.к у 3го фильма другой жанр
-         **/
-    }
-
+    }*/
+/*
     @Test
     void getPopularByYear() {
         Film film = new Film(14, "Ремба первая кровь", "Test",
@@ -95,9 +90,5 @@ class FilmDbStorageTest {
 
         assertEquals(films.size(), 2);
 
-        /**
-         * Получаем фильм ТОЛЬКО по ГОДУ
-         Размер коллекции должен быть равен 2м, т.к у 3го фильма другой год выпуска
-         **/
-    }
+    }*/
 }

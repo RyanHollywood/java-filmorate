@@ -77,3 +77,4 @@ CREATE TABLE IF NOT EXISTS likes (
     CONSTRAINT likes_user_fk FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT likes_film_fk FOREIGN KEY(film_id) REFERENCES films(id) ON DELETE CASCADE
 );
+
