@@ -216,8 +216,7 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE f2.name ILIKE ? or d2.director_name ILIKE ? " +
                 "GROUP BY f2.id; ", title, director);
         while (response.next()) {
-            Film film = get(response.getLong("id"));
-            search.add(film);
+            search.add(get(response.getInt("id")));
         }
         return search;
     }
@@ -229,14 +228,13 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILMS " +
                 "WHERE name ILIKE ? ", query);
         while (response.next()) {
-            Film film = get(response.getLong("id"));
-            search.add(film);
+            search.add(get(response.getInt("id")));
         }
         return search;
     }
 
     private Collection<Film> searchFilmDirector(String query) {
-        Collection<Film> popular = new HashSet<>();
+        Collection<Film> search = new HashSet<>();
         SqlRowSet response = jdbcTemplate.queryForRowSet("" +
                 "SELECT " +
                 "f.id, " +
@@ -255,10 +253,9 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE d2.director_name ILIKE ? " +
                 "GROUP BY f.id ;", query);
         while (response.next()) {
-            Film film = get(response.getLong("id"));
-            popular.add(film);
+            search.add(get(response.getInt("id")));
         }
-        return popular;
+        return search;
     }
 
     private void addGenres(Film film) {
