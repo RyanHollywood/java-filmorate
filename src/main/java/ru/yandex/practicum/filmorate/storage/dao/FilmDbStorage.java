@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -30,20 +31,20 @@ public class FilmDbStorage implements FilmStorage {
         Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                 LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                 new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
-        return getGenres(film);
+        return getDirectors(getGenres(film));
     }
 
     @Override
     public Collection<Film> getAll() {
-        String request = "SELECT * FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id;";
-        return jdbcTemplate.query(request, (rs, rowNum) -> new Film(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("description"),
-                LocalDate.parse(rs.getString("release_date")),
-                Duration.ofSeconds(rs.getLong("duration")),
-                new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")))
-        );
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id;");
+        Collection<Film> allFilms = new TreeSet<>();
+        while(response.next()) {
+            Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
+                    LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
+                    new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            allFilms.add(getDirectors(getGenres(film)));
+        }
+        return allFilms;
     }
 
     @Override
@@ -55,22 +56,51 @@ public class FilmDbStorage implements FilmStorage {
             Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                     LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                     new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
-            getGenres(film);
-            popular.add(film);
+            popular.add(getDirectors(getGenres(film)));
         }
         return popular;
+    }
+
+    public Collection<Film> getByDirectorByLikes(int directorId) {
+        Collection<Film> sortedBylike = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, fd.director_id, COUNT (l.user_id) " +
+                "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id RIGHT JOIN film_directors AS fd ON f.id = fd.film_id " +
+                "LEFT JOIN likes AS l ON f.id = l.film_id WHERE fd.director_id = ? GROUP BY f.id ORDER BY COUNT (l.user_id) DESC;", directorId);
+        while(response.next()) {
+            Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
+                    LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
+                    new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            sortedBylike.add(getDirectors(getGenres(film)));
+        }
+        return sortedBylike;
+    }
+
+    public Collection<Film> getByDirectorByYear(int directorId) {
+        Collection<Film> sortedByYear = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, fd.director_id, COUNT (l.user_id) " +
+                "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id RIGHT JOIN film_directors AS fd ON f.id = fd.film_id " +
+                "LEFT JOIN likes AS l ON f.id = l.film_id WHERE fd.director_id = ? GROUP BY f.id ORDER BY f.release_date ASC;", directorId);
+        while(response.next()) {
+            Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
+                    LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
+                    new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            sortedByYear.add(getDirectors(getGenres(film)));
+        }
+        return sortedByYear;
     }
 
     @Override
     public void add(Film film) {
         addFilm(film);
         addGenres(film);
+        addDirectors(film);
     }
 
     @Override
     public void update(Film film) {
         addFilm(film);
         addGenres(film);
+        addDirectors(film);
     }
 
     @Override
@@ -115,12 +145,12 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public boolean containsLike(long filmId, long userId) {
-        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM likes WHERE user_id=? AND film_id =?", userId, filmId);
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM likes WHERE user_id=? AND film_id = ?", userId, filmId);
         return response.next();
     }
 
     private void addGenres(Film film) {
-        jdbcTemplate.update("DELETE FROM film_genres WHERE film_id=?;", film.getId());
+        jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?;", film.getId());
         if (!Optional.ofNullable(film.getGenres()).isEmpty()) {
             for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update("MERGE INTO film_genres(film_id, genre_id) VALUES(?,?)", film.getId(), genre.getId());
@@ -129,8 +159,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Film getGenres(Film film) {
-        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM film_genres AS fg \n" +
-                "INNER JOIN genres AS g ON fg.genre_id = g.genre_id \n" +
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM film_genres AS fg " +
+                "INNER JOIN genres AS g ON fg.genre_id = g.genre_id " +
                 "WHERE film_id = ?;", film.getId());
 
         TreeSet<Genre> genres = new TreeSet<>();
@@ -140,7 +170,30 @@ public class FilmDbStorage implements FilmStorage {
         if (!genres.isEmpty()) {
             film.setGenres(genres);
         }
+        return film;
+    }
 
+
+    private void addDirectors(Film film) {
+        jdbcTemplate.update("DELETE FROM film_directors WHERE film_id = ?", film.getId());
+        if (Optional.ofNullable(film.getDirectors()).isPresent()) {
+            for (Director director : film.getDirectors()) {
+                jdbcTemplate.update("INSERT INTO film_directors(film_id, director_id) VALUES (?, ?)", film.getId(), director.getId());
+            }
+        }
+    }
+
+    private Film getDirectors(Film film) {
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM film_directors AS fd " +
+                "INNER JOIN directors AS d ON fd.director_id = d.director_id " +
+                "WHERE film_id = ?;", film.getId());
+        TreeSet<Director> directors = new TreeSet<>();
+        while (response.next()) {
+            directors.add(new Director(response.getInt("director_id"), response.getString("director_name")));
+        }
+        //if (!directors.isEmpty()) {
+            film.setDirectors(directors);
+        //}
         return film;
     }
 

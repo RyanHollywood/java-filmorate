@@ -42,6 +42,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public Collection<Film> getByDirectorByLikes(int directorId) {
+        return null;
+    }
+
+    @Override
+    public Collection<Film> getByDirectorByYear(int directorId) {
+        return null;
+    }
+
+    @Override
     public void add(Film film) {
         filmMap.put(film.getId(), film);
     }
