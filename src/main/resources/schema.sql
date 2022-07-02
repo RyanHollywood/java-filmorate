@@ -1,18 +1,3 @@
---DROP TABLE users;
---DROP TABLE friends_status;
---DROP TABLE friends;
---DROP TABLE mpa ;
---DROP TABLE genres ;
---DROP TABLE films ;
---DROP TABLE film_genres;
---DROP TABLE likes ;
-
---DROP TABLE users, friends_status,friends,mpa,genres,films,film_genres,likes;
-
-
-
-
-
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT NOT NULL,
     email VARCHAR(255) NOT NULL,

@@ -68,10 +68,9 @@ public class FilmDbStorage implements FilmStorage {
         Collection<Film> popular = new HashSet<>();
         Integer yearNow = year;
         int genreIdMax = genreId;
-        if (year==1894) {
+        if (year == 1894) {
             yearNow = LocalDate.now().getYear();
-        }
-        else if (genreId==0){
+        } else if (genreId == 0) {
             genreIdMax = 6;
         }
         SqlRowSet response = jdbcTemplate.queryForRowSet("" +
@@ -92,12 +91,13 @@ public class FilmDbStorage implements FilmStorage {
                         "where extract(year from f.release_date)  between ? and ? and g.genre_id between ? and ? " +
                         "GROUP BY f.id " +
                         "ORDER BY COUNT (l.user_id) DESC;"
-                , year,yearNow, genreId,genreIdMax);
+                , year, yearNow, genreId, genreIdMax);
         while (response.next()) {
             Film film = get(response.getLong("id"));
             popular.add(film);
         }
         return popular;
+    }
 
     public Collection<Film> getByDirectorByLikes(int directorId) {
         Collection<Film> sortedBylike = new ArrayList<>();
