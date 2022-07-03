@@ -100,4 +100,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmMap.get(filmId).containsLike(userId);
     }
 
+    public Collection<Film> searchFilm(String query,String by) {
+        return null;
+    }
+
 }
