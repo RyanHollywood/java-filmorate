@@ -33,7 +33,7 @@ class FilmServiceTest {
         NoSuchFilmException exception = assertThrows(NoSuchFilmException.class, () ->
                 filmService.getFilm(film.getId())
         );
-        assertEquals("There is no such film. Check id please!", exception.getMessage());
+        assertEquals("There is no such film. Check eventId please!", exception.getMessage());
 
         filmService.addFilm(film);
         assertEquals(film, filmService.getFilm(1));
@@ -74,7 +74,7 @@ class FilmServiceTest {
         NoSuchFilmException exception = assertThrows(NoSuchFilmException.class, () ->
                 filmService.updateFilm(updatedFilm)
         );
-        assertEquals("There is no such film. Check id please!", exception.getMessage());
+        assertEquals("There is no such film. Check eventId please!", exception.getMessage());
 
         filmService.addFilm(film);
         filmService.updateFilm(updatedFilm);
@@ -88,7 +88,7 @@ class FilmServiceTest {
         NoSuchFilmException exception = assertThrows(NoSuchFilmException.class, () ->
                 filmService.getFilm(film.getId())
         );
-        assertEquals("There is no such film. Check id please!", exception.getMessage());
+        assertEquals("There is no such film. Check eventId please!", exception.getMessage());
     }
 
     @Test
@@ -125,13 +125,13 @@ class FilmServiceTest {
         long userId = 1;
         long anotherUserId = 2;
         filmService.addFilm(film);
-        filmService.addLike(film.getId(), userId);
-        filmService.addLike(film.getId(), anotherUserId);
+        filmService.addLike(film.getEventId(), userId);
+        filmService.addLike(film.getEventId(), anotherUserId);
 
         Film anotherFilm = new Film(2, "AnotherFilm", "AnotherFilm description", LocalDate.of(1895, 12, 29),
                 Duration.ofHours(1), null);
         filmService.addFilm(anotherFilm);
-        filmService.addLike(anotherFilm.getId(), userId);
+        filmService.addLike(anotherFilm.getEventId(), userId);
 
         assertEquals(Set.of(film), filmService.getPopularByCounter(1));
     }

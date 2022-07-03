@@ -39,7 +39,7 @@ public class FilmService {
     public Film getFilm(long id) {
         if (!filmStorage.contains(id)) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + id + " FOUND");
-            throw new NoSuchFilmException("There is no such film. Check id please!");
+            throw new NoSuchFilmException("There is no such film. Check eventId please!");
         }
         log.debug("GET REQUEST SUCCESSFUL - FILM WITH ID:" + id + " FOUND");
         return filmStorage.get(id);
@@ -65,7 +65,7 @@ public class FilmService {
     public Film updateFilm(Film film) {
         if (!filmStorage.contains(film.getId())) {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + film.getId() + " FOUND");
-            throw new NoSuchFilmException("There is no such film. Check id please!");
+            throw new NoSuchFilmException("There is no such film. Check eventId please!");
         }
         filmStorage.update(film);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + film.getId() + " UPDATED");
@@ -75,7 +75,7 @@ public class FilmService {
     public void deleteFilm(long id) {
         if (!filmStorage.contains(id)) {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + id + " FOUND");
-            throw new NoSuchFilmException("There is no such film. Check id please!");
+            throw new NoSuchFilmException("There is no such film. Check eventId please!");
         }
         filmStorage.delete(id);
         log.debug("DELETE REQUEST SUCCESSFUL - FILM WITH ID:" + id + " DELETED");
@@ -90,7 +90,7 @@ public class FilmService {
     public void addLike(long filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND - CANNOT ADD LIKE FROM USER ID:" + userId);
-            throw new NoSuchFilmException("There is no such film. Check id please!");
+            throw new NoSuchFilmException("There is no such film. Check eventId please!");
         }
         filmStorage.addLike(filmId, userId);
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + filmId + " LIKED BY USER WITH ID:" + userId);
@@ -99,7 +99,7 @@ public class FilmService {
     public void deleteLike(long filmId, long userId) {
         if (!filmStorage.contains(filmId)) {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO FILM WITH ID:" + filmId + " FOUND");
-            throw new NoSuchFilmException("There is no such film. Check id please!");
+            throw new NoSuchFilmException("There is no such film. Check eventId please!");
         }
         if (!filmStorage.containsLike(filmId, userId)) {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO LIKE FOR FILM WITH ID:" + filmId + " FROM USER ID:" + userId + " FOUND");
@@ -126,7 +126,7 @@ public class FilmService {
         }
         if (sortedFilms.isEmpty()) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO DIRECTOR WITH ID:" + directorId + " FOUND");
-            throw new NoSuchDirectorException("There is no such director. Check id please!");
+            throw new NoSuchDirectorException("There is no such director. Check eventId please!");
         }
         log.debug("GET REQUEST SUCCESSFUL - GET DIRECTOR ID:" + directorId + " FILMS SORTED BY " + sortBy);
         return sortedFilms;
