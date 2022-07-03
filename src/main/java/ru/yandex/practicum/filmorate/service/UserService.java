@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
@@ -16,11 +18,14 @@ import java.util.Collection;
 public class UserService {
 
     private UserStorage userStorage;
+    private FilmStorage filmStorage;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
-    //public UserService(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
+                       @Qualifier("filmDbStorage") FilmStorage filmStorage) {
+        //public UserService(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
+        this.filmStorage = filmStorage;
     }
 
     public User getUser(long id) {
@@ -114,5 +119,14 @@ public class UserService {
 
     private long getNewId() {
         return userStorage.getNewId();
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+        if (!userStorage.contains(userId)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + userId + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        log.debug("GET REQUEST SUCCESSFUL - GET RECOMMENDATIONS");
+        return filmStorage.getRecommendations(userId);
     }
 }

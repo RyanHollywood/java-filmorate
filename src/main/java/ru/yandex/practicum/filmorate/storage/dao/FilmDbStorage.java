@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component("filmDbStorage")
@@ -38,7 +39,7 @@ public class FilmDbStorage implements FilmStorage {
     public Collection<Film> getAll() {
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id;");
         Collection<Film> allFilms = new TreeSet<>();
-        while(response.next()) {
+        while (response.next()) {
             Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                     LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                     new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
@@ -49,13 +50,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getPopular(int quantity, Integer year, Integer genreId) {
-        if(quantity==10&&year!=1894||genreId!=0){
-            return getPopularByGenresAndYear(year,genreId);
+        if (quantity == 10 && year != 1894 || genreId != 0) {
+            return getPopularByGenresAndYear(year, genreId);
         }
         Collection<Film> popular = new HashSet<>();
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, COUNT (l.user_id) " +
                 "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id LEFT JOIN likes AS l ON f.id = l.film_id GROUP BY f.id ORDER BY COUNT (l.user_id) DESC LIMIT ?;", quantity);
-        while(response.next()) {
+        while (response.next()) {
             Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                     LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                     new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
@@ -104,7 +105,7 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, fd.director_id, COUNT (l.user_id) " +
                 "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id RIGHT JOIN film_directors AS fd ON f.id = fd.film_id " +
                 "LEFT JOIN likes AS l ON f.id = l.film_id WHERE fd.director_id = ? GROUP BY f.id ORDER BY COUNT (l.user_id) DESC;", directorId);
-        while(response.next()) {
+        while (response.next()) {
             Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                     LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                     new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
@@ -118,7 +119,7 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name, fd.director_id, COUNT (l.user_id) " +
                 "FROM films AS f INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id RIGHT JOIN film_directors AS fd ON f.id = fd.film_id " +
                 "LEFT JOIN likes AS l ON f.id = l.film_id WHERE fd.director_id = ? GROUP BY f.id ORDER BY f.release_date ASC;", directorId);
-        while(response.next()) {
+        while (response.next()) {
             Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
                     LocalDate.parse(response.getString("release_date")), Duration.ofSeconds(response.getLong("duration")),
                     new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
@@ -191,6 +192,76 @@ public class FilmDbStorage implements FilmStorage {
         return response.next();
     }
 
+    public Collection<Film> searchFilm(String query, String by)  {
+        Collection<Film> search = new HashSet<>();
+        String director = '%' + query + '%';
+        String title = '%' + query + '%';
+        if (by.equals("director")) {
+            return searchFilmDirector(director);
+        } else if (by.equals("title")) {
+            return searchFilmTitle(title);
+        }
+        SqlRowSet response = jdbcTemplate.queryForRowSet("" +
+                "SELECT " +
+                "f2.id, " +
+                "f2.name, " +
+                "f2.description, " +
+                "f2.release_date, " +
+                "f2.duration, " +
+                "f2.mpa_id, " +
+                "m.mpa_name, " +
+                "d.film_id, " +
+                "d2.director_name " +
+                "FROM films AS f " +
+                "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
+                "RIGHT JOIN film_directors AS d ON f.id = d.film_id " +
+                "RIGHT JOIN films f2 on f2.id = d.film_id " +
+                "LEFT JOIN directors d2 on d2.director_id = d.director_id " +
+                "WHERE f2.name ILIKE ? or d2.director_name ILIKE ? " +
+                "GROUP BY f2.id; ", title, director);
+        while (response.next()) {
+            search.add(get(response.getInt("id")));
+        }
+        return search;
+    }
+
+    private Collection<Film> searchFilmTitle(String query) {
+        Collection<Film> search = new HashSet<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("" +
+                "SELECT * " +
+                "FROM FILMS " +
+                "WHERE name ILIKE ? ", query);
+        while (response.next()) {
+            search.add(get(response.getInt("id")));
+        }
+        return search;
+    }
+
+    private Collection<Film> searchFilmDirector(String query) {
+        Collection<Film> search = new HashSet<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("" +
+                "SELECT " +
+                "f.id, " +
+                "f.name, " +
+                "f.description, " +
+                "f.release_date, " +
+                "f.duration, " +
+                "f.mpa_id, " +
+                "m.mpa_name, " +
+                "d.film_id, " +
+                "d2.director_name " +
+                "FROM films AS f " +
+                "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
+                "RIGHT JOIN film_directors AS d ON f.id = d.film_id " +
+                "LEFT JOIN directors d2 on d2.director_id = d.director_id " +
+                "WHERE d2.director_name ILIKE ? " +
+                "GROUP BY f.id ;", query);
+        while (response.next()) {
+            search.add(get(response.getInt("id")));
+        }
+        return search;
+    }
+
     private void addGenres(Film film) {
         jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?;", film.getId());
         if (!Optional.ofNullable(film.getGenres()).isEmpty()) {
@@ -234,7 +305,7 @@ public class FilmDbStorage implements FilmStorage {
             directors.add(new Director(response.getInt("director_id"), response.getString("director_name")));
         }
         //if (!directors.isEmpty()) {
-            film.setDirectors(directors);
+        film.setDirectors(directors);
         //}
         return film;
     }
@@ -242,5 +313,85 @@ public class FilmDbStorage implements FilmStorage {
     private void addFilm(Film film) {
         jdbcTemplate.update("MERGE INTO films(id, name, description, release_date, duration, mpa_id) VALUES(?, ?, ?, ?, ?, ?)",
                 film.getId(), film.getName(), film.getDescription(), Date.valueOf(film.getReleaseDate()), film.getDuration().getSeconds(), film.getMpa().getId());
+    }
+
+    public List<Long> getFilmsOfUser(Long userId) {
+        List<Long> filmsList = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes WHERE user_id = ?;", userId);
+        while (response.next()) {
+            filmsList.add(response.getLong("film_id"));
+        }
+        return filmsList;
+    }
+
+    public List<Long> getFilmsLikedByOtherUsers(List<Long> listOfUsers, int i) {
+        List<Long> filmsOfOtherUsers = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes where user_id = ?;",
+                listOfUsers.get(i));
+        while (response.next()) {
+            filmsOfOtherUsers.add(response.getLong("film_id"));
+        }
+        return filmsOfOtherUsers;
+    }
+
+    public List<Long> getListOfOtherUsers(Long userId) {
+        List<Long> usersList = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT DISTINCT user_id FROM likes WHERE user_id != ?;",
+                userId);
+        while (response.next()) {
+            usersList.add(response.getLong("user_id"));
+        }
+        return usersList;
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+        List<Long> listOfUserFilms = getFilmsOfUser(userId);
+        List<Long> listOfOtherUsers = getListOfOtherUsers(userId);
+        Collection<Film> listOfRecommendedFilms = new HashSet<>();
+
+        for (int i = 0; i < listOfOtherUsers.size(); i++) {
+            List<Long> filmsOfOtherUsers = getFilmsLikedByOtherUsers(listOfOtherUsers, i);
+            List<Long> commonFilms = listOfUserFilms.stream().filter(filmsOfOtherUsers::contains).collect(Collectors.toList());
+
+            // Если вкусы пользователей совпадают больше, чем на 40%, то фильмы рекомендуются
+            if (commonFilms.size() > listOfUserFilms.size() * 0.4) {
+                filmsOfOtherUsers.removeAll(commonFilms);
+
+                //Собираем коллекцию непросмотренных фильмов из списка фильмов другого юзера
+                for (Long filmId : filmsOfOtherUsers) {
+                    SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films AS f " +
+                            "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id WHERE id=?;", filmId);
+                    while (response.next()) {
+                        Film film = new Film(response.getLong("id"), response.getString("name"), response.getString(
+                                "description"),
+                                LocalDate.parse(Objects.requireNonNull(response.getString("release_date"))),
+                                Duration.ofSeconds(response.getLong(
+                                        "duration")),
+                                new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+                        listOfRecommendedFilms.add(getGenres(film));
+                    }
+                }
+            }
+        }
+        return listOfRecommendedFilms;
+    }
+
+
+    public Collection<Film> getCommon(long userId, long friendId) {
+        Collection<Film> commonFilms = new HashSet<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films INNER JOIN mpa ON films.mpa_id = mpa.mpa_id " +
+                "WHERE id IN (SELECT film_id FROM likes WHERE film_id IN " +
+                "(SELECT id FROM films WHERE id IN (SELECT ul.film_id FROM " +
+                "(SELECT * FROM likes WHERE user_id = ?) as ul " +
+                "INNER JOIN (SELECT * FROM likes WHERE user_id = ?) as ul1 on ul.film_id = ul1.film_id)) " +
+                "GROUP BY id ORDER BY COUNT(id) DESC);", userId, friendId);
+        while (response.next()) {
+            Film film = new Film(response.getLong("id"), response.getString("name"), response.getString("description"),
+                    LocalDate.parse(Objects.requireNonNull(response.getString("release_date"))), Duration.ofSeconds(response.getLong(
+                    "duration")),
+                    new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+            commonFilms.add(film);
+        }
+        return commonFilms;
     }
 }

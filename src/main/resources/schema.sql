@@ -88,3 +88,20 @@ CREATE TABLE IF NOT EXISTS likes (
     CONSTRAINT likes_user_fk FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT likes_film_fk FOREIGN KEY(film_id) REFERENCES films(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS reviews (
+                                       review_id BIGINT NOT NULL,
+                                       content VARCHAR NOT NULL,
+                                       is_positive BOOLEAN,
+                                       user_id BIGINT NOT NULL,
+                                       film_id BIGINT NOT NULL,
+                                       useful int NOT NULL,
+                                       CONSTRAINT review_pk PRIMARY KEY (review_id)
+    );
+
+CREATE TABLE IF NOT EXISTS reviews_users (
+                                             review_id BIGINT NOT NULL,
+                                             user_id BIGINT NOT NULL,
+                                             is_like boolean
+);
+

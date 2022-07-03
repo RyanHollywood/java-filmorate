@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,11 +22,14 @@ public class FilmService {
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
     private FilmStorage filmStorage;
+    private UserStorage userStorage;
 
     @Autowired
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
         //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
     public Film getFilm(long id) {
@@ -100,16 +105,16 @@ public class FilmService {
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }
 
-    public Collection<Film> getPopularByCounter(int counter,Integer year,Integer genreId) {
+    public Collection<Film> getPopularByCounter(int counter, Integer year, Integer genreId) {
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return filmStorage.getPopular(counter,year,genreId);
+        return filmStorage.getPopular(counter, year, genreId);
     }
 
     public Collection<Film> getByDirectorSorted(int directorId, String sortBy) {
         Collection<Film> sortedFilms = new ArrayList<>();
-        if(sortBy.equals("year")) {
+        if (sortBy.equals("year")) {
             sortedFilms = filmStorage.getByDirectorByYear(directorId);
-        } else if(sortBy.equals("likes")) {
+        } else if (sortBy.equals("likes")) {
             sortedFilms = filmStorage.getByDirectorByLikes(directorId);
         } else {
             log.warn("GET REQUEST UNSUCCESSFUL - NO SORTING OPTION: " + sortBy + " FOUND");
@@ -123,7 +128,25 @@ public class FilmService {
         return sortedFilms;
     }
 
+    public Collection<Film> searchFilm(String query, String by) {
+        log.debug("GET REQUEST SUCCESSFUL - GET " + by + " MOST SEARCH FILMS");
+        return filmStorage.searchFilm(query, by);
+    }
+
     private long getNewId() {
         return filmStorage.getNewId();
+    }
+
+    public Collection<Film> getCommon(long userId, long friendId) {
+        if (!userStorage.contains(userId)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + userId + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        if (!userStorage.contains(friendId)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + friendId + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        log.debug("GET REQUEST SUCCESSFUL - GET COMMON FILMS");
+        return filmStorage.getCommon(userId, friendId);
     }
 }
