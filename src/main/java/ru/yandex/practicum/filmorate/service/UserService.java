@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -27,7 +28,7 @@ public class UserService {
         this.filmStorage = filmStorage;
     }
 
-    public User getUser(Long id) {
+    public User getUser(long id) {
         if (!userStorage.contains(id)) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + id + " FOUND");
             throw new NoSuchUserException("There is no such user");
@@ -105,6 +106,15 @@ public class UserService {
         }
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USERS ID:" + id + " AND ID:" + friendId + " COMMON FRIENDS");
         return userStorage.getCommonFriends(id, friendId);
+    }
+
+    public Collection<Event> getFeed(long id) {
+        if (!userStorage.contains(id)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER FEED WITH ID:" + id + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        log.debug("GET REQUEST SUCCESSFUL - USER FEED WITH ID:" + id + " FOUND");
+        return userStorage.getFeed(id);
     }
 
     private long getNewId() {
