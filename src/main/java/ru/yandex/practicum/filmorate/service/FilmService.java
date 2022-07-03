@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.*;
+import ru.yandex.practicum.filmorate.exception.FilmValidationException;
+import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Slf4j
@@ -23,7 +24,7 @@ public class FilmService {
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
-        //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
+    //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -100,27 +101,9 @@ public class FilmService {
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }
 
-    public Collection<Film> getPopularByCounter(int counter,Integer year,Integer genreId) {
+    public Collection<Film> getPopularByCounter(int counter) {
         log.debug("GET REQUEST SUCCESSFUL - GET " + counter + " MOST POPULAR FILMS");
-        return filmStorage.getPopular(counter,year,genreId);
-    }
-
-    public Collection<Film> getByDirectorSorted(int directorId, String sortBy) {
-        Collection<Film> sortedFilms = new ArrayList<>();
-        if(sortBy.equals("year")) {
-            sortedFilms = filmStorage.getByDirectorByYear(directorId);
-        } else if(sortBy.equals("likes")) {
-            sortedFilms = filmStorage.getByDirectorByLikes(directorId);
-        } else {
-            log.warn("GET REQUEST UNSUCCESSFUL - NO SORTING OPTION: " + sortBy + " FOUND");
-            throw new NoSuchSortingItemFound("There is no such sorting item. Check parameter please!");
-        }
-        if (sortedFilms.isEmpty()) {
-            log.warn("GET REQUEST UNSUCCESSFUL - NO DIRECTOR WITH ID:" + directorId + " FOUND");
-            throw new NoSuchDirectorException("There is no such director. Check id please!");
-        }
-        log.debug("GET REQUEST SUCCESSFUL - GET DIRECTOR ID:" + directorId + " FILMS SORTED BY " + sortBy);
-        return sortedFilms;
+        return filmStorage.getPopular(counter);
     }
 
     private long getNewId() {

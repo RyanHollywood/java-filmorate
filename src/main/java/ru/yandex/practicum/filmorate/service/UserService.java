@@ -85,19 +85,11 @@ public class UserService {
     }
 
     public Collection<User> getFriends(long id) {
-        if (!userStorage.contains(id)) {
-            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + id + " FOUND");
-            throw new NoSuchUserException("There is no such user");
-        }
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USER ID:" + id + " FRIENDS");
         return userStorage.getFriends(id);
     }
 
     public Collection<User> getCommonFriends(long id, long friendId) {
-        if (!userStorage.contains(id) || !userStorage.contains(friendId)) {
-            log.warn("DELETE REQUEST UNSUCCESSFUL - " + "ONE OF USERS ID:" + id + " AND ID:" + friendId + "NOT FOUND - CANNOT DELETE FRIEND");
-            throw new NoSuchUserException("There is no such user");
-        }
         log.debug("GET REQUEST SUCCESSFUL - GET ALL USERS ID:" + id + " AND ID:" + friendId + " COMMON FRIENDS");
         return userStorage.getCommonFriends(id, friendId);
     }
