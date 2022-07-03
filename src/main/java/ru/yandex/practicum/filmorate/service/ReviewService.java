@@ -24,11 +24,11 @@ public class ReviewService {
         return storage;
     }
     public Review createReview(Review review){
-        if(review.getId()<0 ) throw new ReviewValidationException("WRONG Review id: "+review.getId()+".");
-        if(review.getFilmId()<0) throw new ReviewValidationException("WRONG Film id: "+review.getFilmId()+".");
-        if(review.getUserId()<0) throw new ReviewValidationException("WRONG User id: "+review.getUserId()+".");
-        if(review.getFilmId()==0) throw new ReviewNullException("WRONG Film id: "+review.getFilmId()+".");
-        if(review.getUserId()==0) throw new ReviewNullException("WRONG User id: "+review.getUserId()+".");
+        if(review.getId()<0 ) throw new ReviewValidationException("WRONG Review eventId: "+review.getId()+".");
+        if(review.getFilmId()<0) throw new ReviewValidationException("WRONG Film eventId: "+review.getFilmId()+".");
+        if(review.getUserId()<0) throw new ReviewValidationException("WRONG User eventId: "+review.getUserId()+".");
+        if(review.getFilmId()==0) throw new ReviewNullException("WRONG Film eventId: "+review.getFilmId()+".");
+        if(review.getUserId()==0) throw new ReviewNullException("WRONG User eventId: "+review.getUserId()+".");
         if(review.getContent().isEmpty()) throw new ReviewNullException("Content is empty.");
         if(review.getIsPositive().isEmpty()) throw new ReviewNullException("isPositive is null.");
         return getStorage().createReview(review);
