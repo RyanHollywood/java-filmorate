@@ -70,7 +70,7 @@ class ReviewServiceTest {
             reviewService.createReview(review);
         });
 
-        String expectedMessage = "There is no such film. Check id please!";
+        String expectedMessage = "There is no such film. Check eventId please!";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -82,7 +82,7 @@ class ReviewServiceTest {
             reviewService.createReview(review);
         });
 
-        String expectedMessage = "There is no such film. Check id please!";
+        String expectedMessage = "There is no such film. Check eventId please!";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -105,7 +105,7 @@ class ReviewServiceTest {
         userService.addUser(user);
         reviewService.createReview(review);
         assertEquals(reviewService.getReviewById(review.getId()).toString(),
-                "Review(id=1, content=content, userId=1, filmId=1, useful=0, isPositive=Optional[true])");
+                "Review(eventId=1, content=content, userId=1, filmId=1, useful=0, isPositive=Optional[true])");
         reviewService.removeReview(review.getId());
     }
 
@@ -119,7 +119,7 @@ class ReviewServiceTest {
             reviewService.getReviewById(review.getId());
         });
 
-        String expectedMessage = "Review with id = 1 does not exist";
+        String expectedMessage = "Review with eventId = 1 does not exist";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -139,7 +139,7 @@ class ReviewServiceTest {
             reviewService.addLike(review.getId(), 2);
         });
 
-        String expectedMessage = "Review with id = 1 does not exist";
+        String expectedMessage = "Review with eventId = 1 does not exist";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -176,7 +176,7 @@ class ReviewServiceTest {
             reviewService.addDisLike(review.getId(), 2);
         });
 
-        String expectedMessage = "Review with id = 1 does not exist";
+        String expectedMessage = "Review with eventId = 1 does not exist";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -263,7 +263,7 @@ class ReviewServiceTest {
         reviewService.addLike(2, 2);
         reviewService.addDisLike(1, 1);
         assertEquals(reviewService.getNReviews((int) film.getId(), 1).stream().findFirst().get().toString(),
-                "Review(id=2, content=content, userId=2, filmId=1, useful=1, isPositive=Optional[true])");
+                "Review(eventId=2, content=content, userId=2, filmId=1, useful=1, isPositive=Optional[true])");
         reviewService.removeReview(2);
     }
 }

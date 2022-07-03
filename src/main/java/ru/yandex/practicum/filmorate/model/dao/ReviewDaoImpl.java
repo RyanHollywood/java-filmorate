@@ -33,13 +33,21 @@ public class ReviewDaoImpl implements ReviewDao{
         this.userService = userService;
     }
 
-    public int getMaxId() {
+    public int getId() {
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM reviews ORDER BY review_id DESC LIMIT 1;");
+        if (response.next()) {
+            return response.getInt("review_id") + 1;
+        }
+        return 1;
+        /*
         Set<Review> reviews = getAllReviews();
         int maxId = 0;
         for (Review review : reviews) {
             if (maxId < review.getId()) maxId = review.getId();
         }
         return maxId + 1;
+
+         */
     }
 
     @Override
@@ -48,15 +56,20 @@ public class ReviewDaoImpl implements ReviewDao{
             filmService.getFilm(review.getFilmId());
             userService.getUser((long) review.getUserId());
         }
-        if(review.getId() == 0) review.setId(getMaxId());
+        if(review.getId() == 0) review.setId(getId());
         jdbcTemplate.update("MERGE INTO reviews(review_id,content,is_positive,user_id,film_id,useful) VALUES(?,?,?,?,?,?)",
                 review.getId(),review.getContent(),review.isPositive(),review.getUserId(),review.getFilmId(),review.getUseful());
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", review.getUserId(), review.getId(), "REVIEW", "ADD", System.currentTimeMillis());
         return review;
     }
 
     @Override
     public void removeReview(int id) {
+        Review review = getReviewById(id);
         jdbcTemplate.update("DELETE FROM reviews WHERE review_id = ?",id);
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", review.getUserId(), review.getId(), "REVIEW", "REMOVE", System.currentTimeMillis());
     }
 
     @Override
@@ -73,19 +86,19 @@ public class ReviewDaoImpl implements ReviewDao{
             );
             return review;
         }
-            throw new NoSuchReviewException("Review with id = " + id + " does not exist");
+            throw new NoSuchReviewException("Review with eventId = " + id + " does not exist");
     }
 
     @Override
     public void addLike(int reviewId, int userId) {
         {
-            if(getReviewById(reviewId) == null )throw new ReviewNullException("Review with id = "+reviewId+" does not exist");
+            if(getReviewById(reviewId) == null )throw new ReviewNullException("Review with eventId = "+reviewId+" does not exist");
             userService.getUser((long) reviewId);
         }
         {
             SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("SELECT * FROM reviews_users WHERE review_id = ? AND user_id = ?;",reviewId,userId);
             if(reviewRows.next()){
-                throw new ManyLikesException("User with id = "+userId+" already has like/dislike. User can have only one like/dislike per review.");
+                throw new ManyLikesException("User with eventId = "+userId+" already has like/dislike. User can have only one like/dislike per review.");
             }
         }
         jdbcTemplate.update("UPDATE reviews SET useful = ? WHERE review_id = ?",
@@ -97,13 +110,13 @@ public class ReviewDaoImpl implements ReviewDao{
     @Override
     public void addDisLike(int reviewId, int userId) {
         {
-            if(getReviewById(reviewId) == null )throw new ReviewNullException("Review with id = "+reviewId+" does not exist");
+            if(getReviewById(reviewId) == null )throw new ReviewNullException("Review with eventId = "+reviewId+" does not exist");
             userService.getUser((long) reviewId);
         }
         {
             SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("SELECT * FROM reviews_users WHERE review_id = ? AND user_id = ?;",reviewId,userId);
             if(reviewRows.next()){
-                throw new ManyLikesException("User with id = "+userId+" already has like/dislike. User can have only one like/dislike per review.");
+                throw new ManyLikesException("User with eventId = "+userId+" already has like/dislike. User can have only one like/dislike per review.");
             }
         }
         jdbcTemplate.update("UPDATE reviews SET useful = ? WHERE review_id = ?;",
@@ -151,8 +164,17 @@ public class ReviewDaoImpl implements ReviewDao{
         review.setFilmId(getReviewById(review.getId()).getFilmId());
         review.setUseful(getReviewById(review.getId()).getUseful());
         review.setUserId(getReviewById(review.getId()).getUserId());
-        removeReview(review.getId());
+        jdbcTemplate.update("MERGE INTO reviews(review_id,content,is_positive,user_id,film_id,useful) VALUES(?,?,?,?,?,?)",
+                review.getId(),review.getContent(),review.isPositive(),review.getUserId(),review.getFilmId(),review.getUseful());
+        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
+                "VALUES (?, ?, ?, ?, ?)", review.getUserId(), review.getId(), "REVIEW", "UPDATE", System.currentTimeMillis());
+        /*
+        review.setFilmId(getReviewById(review.getEventId()).getFilmId());
+        review.setUseful(getReviewById(review.getEventId()).getUseful());
+        review.setUserId(getReviewById(review.getEventId()).getUserId());
+        removeReview(review.getEventId());
         createReview(review);
+         */
     }
 
     @Override

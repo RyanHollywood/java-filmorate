@@ -25,7 +25,7 @@ public class DirectorService {
         Director director = directorDao.getDirector(id);
         if (Optional.ofNullable(director).isEmpty()) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO DIRECTOR WITH ID:" + id + " FOUND");
-            throw new NoSuchDirectorException("There is no such director. Check id please!");
+            throw new NoSuchDirectorException("There is no such director. Check eventId please!");
         }
         log.debug("GET REQUEST SUCCESSFUL - DIRECTOR WITH ID:" + id + " FOUND");
         return director;
@@ -43,7 +43,7 @@ public class DirectorService {
     public void updateDirector(Director director) {
         if (!directorDao.contains(director.getId())) {
             log.warn("PUT REQUEST UNSUCCESSFUL - NO DIRECTOR WITH ID:" + director.getId() + " FOUND");
-            throw new NoSuchDirectorException("There is no such director. Check id please!");
+            throw new NoSuchDirectorException("There is no such director. Check eventId please!");
         }
         directorDao.updateDirector(director);
         log.debug("PUT REQUEST SUCCESSFUL - DIRECTOR WITH ID:" + director.getId() + " UPDATED");
@@ -52,7 +52,7 @@ public class DirectorService {
     public void deleteDirector(int id) {
         if (!directorDao.contains(id)) {
             log.warn("DELETE REQUEST UNSUCCESSFUL - NO DIRECTOR WITH ID:" + id + " FOUND");
-            throw new NoSuchDirectorException("There is no such director. Check id please!");
+            throw new NoSuchDirectorException("There is no such director. Check eventId please!");
         }
         directorDao.deleteDirector(id);
         log.debug("DELETE REQUEST SUCCESSFUL - DIRECTOR WITH ID:" + id + " DELETED");

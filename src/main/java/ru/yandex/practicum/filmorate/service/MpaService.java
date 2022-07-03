@@ -25,7 +25,7 @@ public class MpaService {
         Mpa mpa = mpaDao.getMpa(id);
         if (Optional.ofNullable(mpa).isEmpty()) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO MPA WITH ID:" + id + " FOUND");
-            throw new NoSuchMpaException("There is no such mpa. Check id please!");
+            throw new NoSuchMpaException("There is no such mpa. Check eventId please!");
         }
         log.debug("GET REQUEST SUCCESSFUL - MPA WITH ID:" + id + " FOUND");
         return mpa;

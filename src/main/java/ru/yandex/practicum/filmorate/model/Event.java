@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class Event implements Comparable<Event>{
 
     @NotNull
-    private int id;
+    private int eventId;
 
     @NotNull
     private long userId;
@@ -32,6 +32,6 @@ public class Event implements Comparable<Event>{
 
     @Override
     public int compareTo(Event event) {
-        return this.id - event.id;
+        return this.eventId - event.eventId;
     }
 }
