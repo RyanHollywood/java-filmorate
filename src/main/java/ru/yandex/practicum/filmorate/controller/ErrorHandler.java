@@ -44,4 +44,39 @@ public class ErrorHandler {
     public String handleIncorrectParameterException(final NoSuchGenreException exception) {
         return exception.getMessage();
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleIncorrectParameterException(final NoSuchDirectorException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleIncorrectParameterException(final NoSuchSortingItemFound exception) {
+        return exception.getMessage();
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleReviewValidationException(final ReviewValidationException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleReviewNullException(final ReviewNullException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNoSuchReviewException(final NoSuchReviewException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleManyLikesException(final ManyLikesException exception) {
+        return exception.getMessage();
+    }
 }
