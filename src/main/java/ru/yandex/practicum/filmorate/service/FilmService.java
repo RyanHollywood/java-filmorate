@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,11 +22,14 @@ public class FilmService {
     private final LocalDate CINEMA_BIRTH_DATE = LocalDate.of(1895, 12, 28);
 
     private FilmStorage filmStorage;
+    private UserStorage userStorage;
 
     @Autowired
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
         //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
     public Film getFilm(long id) {
@@ -131,5 +135,18 @@ public class FilmService {
 
     private long getNewId() {
         return filmStorage.getNewId();
+    }
+
+    public Collection<Film> getCommon(long userId, long friendId) {
+        if (!userStorage.contains(userId)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + userId + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        if (!userStorage.contains(friendId)) {
+            log.warn("GET REQUEST UNSUCCESSFUL - NO USER WITH ID:" + friendId + " FOUND");
+            throw new NoSuchUserException("There is no such user");
+        }
+        log.debug("GET REQUEST SUCCESSFUL - GET COMMON FILMS");
+        return filmStorage.getCommon(userId, friendId);
     }
 }

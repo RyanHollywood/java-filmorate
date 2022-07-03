@@ -100,6 +100,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmMap.get(filmId).containsLike(userId);
     }
 
+    @Override
+    public Collection<Film> getCommon(long userId, long friendId) {
+        return null;
+    }
+
     public Collection<Film> searchFilm(String query,String by) {
         return null;
     }
