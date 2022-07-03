@@ -37,6 +37,8 @@ public interface FilmStorage {
 
     boolean containsLike(long filmId, long userId);
 
+    Collection<Film> getRecommendations(long userId);
+
     Collection<Film> getCommon(long userId, long friendId);
 
     Collection<Film> searchFilm(String query,String by);

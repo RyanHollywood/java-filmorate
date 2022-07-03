@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component("filmDbStorage")
@@ -310,6 +311,68 @@ public class FilmDbStorage implements FilmStorage {
                 film.getId(), film.getName(), film.getDescription(), Date.valueOf(film.getReleaseDate()), film.getDuration().getSeconds(), film.getMpa().getId());
     }
 
+    public List<Long> getFilmsOfUser(Long userId) {
+        List<Long> filmsList = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes WHERE user_id = ?;", userId);
+        while (response.next()) {
+            filmsList.add(response.getLong("film_id"));
+        }
+        return filmsList;
+    }
+
+    public List<Long> getFilmsLikedByOtherUsers(List<Long> listOfUsers, int i) {
+        List<Long> filmsOfOtherUsers = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes where user_id = ?;",
+                listOfUsers.get(i));
+        while (response.next()) {
+            filmsOfOtherUsers.add(response.getLong("film_id"));
+        }
+        return filmsOfOtherUsers;
+    }
+
+    public List<Long> getListOfOtherUsers(Long userId) {
+        List<Long> usersList = new ArrayList<>();
+        SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT DISTINCT user_id FROM likes WHERE user_id != ?;",
+                userId);
+        while (response.next()) {
+            usersList.add(response.getLong("user_id"));
+        }
+        return usersList;
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+        List<Long> listOfUserFilms = getFilmsOfUser(userId);
+        List<Long> listOfOtherUsers = getListOfOtherUsers(userId);
+        Collection<Film> listOfRecommendedFilms = new HashSet<>();
+
+        for (int i = 0; i < listOfOtherUsers.size(); i++) {
+            List<Long> filmsOfOtherUsers = getFilmsLikedByOtherUsers(listOfOtherUsers, i);
+            List<Long> commonFilms = listOfUserFilms.stream().filter(filmsOfOtherUsers::contains).collect(Collectors.toList());
+
+            // Если вкусы пользователей совпадают больше, чем на 40%, то фильмы рекомендуются
+            if (commonFilms.size() > listOfUserFilms.size() * 0.4) {
+                filmsOfOtherUsers.removeAll(commonFilms);
+
+                //Собираем коллекцию непросмотренных фильмов из списка фильмов другого юзера
+                for (Long filmId : filmsOfOtherUsers) {
+                    SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films AS f " +
+                            "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id WHERE id=?;", filmId);
+                    while (response.next()) {
+                        Film film = new Film(response.getLong("id"), response.getString("name"), response.getString(
+                                "description"),
+                                LocalDate.parse(Objects.requireNonNull(response.getString("release_date"))),
+                                Duration.ofSeconds(response.getLong(
+                                        "duration")),
+                                new Mpa(response.getInt("mpa_id"), response.getString("mpa_name")));
+                        listOfRecommendedFilms.add(getGenres(film));
+                    }
+                }
+            }
+        }
+        return listOfRecommendedFilms;
+    }
+
+
     public Collection<Film> getCommon(long userId, long friendId) {
         Collection<Film> commonFilms = new HashSet<>();
         SqlRowSet response = jdbcTemplate.queryForRowSet("SELECT * FROM films INNER JOIN mpa ON films.mpa_id = mpa.mpa_id " +
@@ -328,4 +391,3 @@ public class FilmDbStorage implements FilmStorage {
         return commonFilms;
     }
 }
-

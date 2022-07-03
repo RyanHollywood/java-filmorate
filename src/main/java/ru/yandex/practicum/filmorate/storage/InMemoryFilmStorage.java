@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -101,6 +100,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getRecommendations(long userId) {
+        return null;
+    }
+
     public Collection<Film> getCommon(long userId, long friendId) {
         return null;
     }
@@ -108,5 +111,4 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Collection<Film> searchFilm(String query,String by) {
         return null;
     }
-
 }

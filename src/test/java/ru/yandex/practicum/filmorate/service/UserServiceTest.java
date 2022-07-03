@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ class UserServiceTest {
 
     @BeforeEach
     void reload() {
-        userService = new UserService(new InMemoryUserStorage());
+        userService = new UserService(new InMemoryUserStorage(), new InMemoryFilmStorage());
         user = new User(1L, "user@mail.ru", "userLogin", null, LocalDate.of(1990, 01, 01));
     }
 
