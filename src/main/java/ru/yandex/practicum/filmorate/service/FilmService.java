@@ -10,13 +10,13 @@ import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
 import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.*;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Slf4j
@@ -27,13 +27,15 @@ public class FilmService {
 
     private FilmStorage filmStorage;
     private UserStorage userStorage;
+    private EventService eventService;
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("userDbStorage") UserStorage userStorage) {
-        //public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       EventService eventService) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.eventService = eventService;
     }
 
     public Film getFilm(long id) {
@@ -93,6 +95,7 @@ public class FilmService {
             throw new NoSuchFilmException("There is no such film. Check eventId please!");
         }
         filmStorage.addLike(filmId, userId);
+        eventService.addEvent(new Event(null, userId, filmId, "LIKE", "ADD", System.currentTimeMillis()));
         log.debug("PUT REQUEST SUCCESSFUL - FILM WITH ID:" + filmId + " LIKED BY USER WITH ID:" + userId);
     }
 
@@ -106,6 +109,7 @@ public class FilmService {
             throw new LikeNotFoundException("Like not found");
         }
         filmStorage.deleteLike(filmId, userId);
+        eventService.addEvent(new Event(null, userId, filmId, "LIKE", "REMOVE", System.currentTimeMillis()));
         log.debug("DELETE REQUEST SUCCESSFUL - LIKE FOR FILM WITH ID:" + filmId + "FROM USER ID:" + userId + " DELETED");
     }
 
@@ -115,7 +119,7 @@ public class FilmService {
     }
 
     public Collection<Film> getByDirectorSorted(int directorId, String sortBy) {
-        Collection<Film> sortedFilms = new ArrayList<>();
+        Collection<Film> sortedFilms;
         if (sortBy.equals("year")) {
             sortedFilms = filmStorage.getByDirectorByYear(directorId);
         } else if (sortBy.equals("likes")) {

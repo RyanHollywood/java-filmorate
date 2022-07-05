@@ -100,15 +100,11 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void addFriend(long id, long friendId) {
         jdbcTemplate.update("MERGE INTO friends(request_id, response_id, status_id) VALUES (?, ?, ?);", id, friendId, 1);
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", id, friendId, "FRIEND", "ADD", System.currentTimeMillis());
     }
 
     @Override
     public void deleteFriend(long id, long friendId) {
         jdbcTemplate.update("DELETE FROM friends WHERE request_id=? AND response_id=?", id, friendId);
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", id, friendId, "FRIEND", "REMOVE", System.currentTimeMillis());
     }
 
     @Override

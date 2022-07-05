@@ -19,13 +19,15 @@ public class UserService {
 
     private UserStorage userStorage;
     private FilmStorage filmStorage;
+    private EventService eventService;
 
     @Autowired
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
-                       @Qualifier("filmDbStorage") FilmStorage filmStorage) {
-        //public UserService(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
+                       @Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       EventService eventService) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
+        this.eventService = eventService;
     }
 
     public User getUser(long id) {
@@ -78,6 +80,7 @@ public class UserService {
             throw new NoSuchUserException("There is no such user");
         }
         userStorage.addFriend(id, friendId);
+        eventService.addEvent(new Event(null, id, friendId, "FRIEND", "ADD", System.currentTimeMillis()));
         log.debug("PUT REQUEST SUCCESSFUL - " + "MAKE USERS ID:" + id + " AND ID:" + friendId +  " FRIENDS SUCCESSFUL");
     }
 
@@ -87,6 +90,7 @@ public class UserService {
             throw new NoSuchUserException("There is no such user");
         }
         userStorage.deleteFriend(id, friendId);
+        eventService.addEvent(new Event(null, id, friendId, "FRIEND", "REMOVE", System.currentTimeMillis()));
         log.debug("DELETE REQUEST SUCCESSFUL - " + "USERS ID:" + id + " AND ID:" + friendId + " ARE NOT FRIENDS");
     }
 
