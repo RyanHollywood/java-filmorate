@@ -46,8 +46,8 @@ class ReviewServiceTest {
     void reload() {
         filmService = new FilmService(new InMemoryFilmStorage());
         userService = new UserService(new InMemoryUserStorage());
-        reviewService.getStorage().setFilmService(filmService);
-        reviewService.getStorage().setUserService(userService);
+        reviewService.getReviewDbStorage().setFilmService(filmService);
+        reviewService.getReviewDbStorage().setUserService(userService);
     }
 
     @AfterEach
@@ -262,7 +262,7 @@ class ReviewServiceTest {
         reviewService.createReview(review);
         reviewService.addLike(2, 2);
         reviewService.addDisLike(1, 1);
-        assertEquals(reviewService.getNReviews((int) film.getId(), 1).stream().findFirst().get().toString(),
+        assertEquals(reviewService.getNegativeReviews((int) film.getId(), 1).stream().findFirst().get().toString(),
                 "Review(eventId=2, content=content, userId=2, filmId=1, useful=1, isPositive=Optional[true])");
         reviewService.removeReview(2);
     }

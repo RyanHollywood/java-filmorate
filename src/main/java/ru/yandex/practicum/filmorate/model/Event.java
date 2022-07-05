@@ -10,8 +10,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class Event implements Comparable<Event>{
 
-    @NotNull
-    private int eventId;
+    private Integer eventId;
 
     @NotNull
     private long userId;

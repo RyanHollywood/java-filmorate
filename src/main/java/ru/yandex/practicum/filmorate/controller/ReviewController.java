@@ -42,13 +42,13 @@ public class ReviewController {
             return answer;
         }
         if(count != null) {
-            List<Review> answer = new ArrayList<>(reviewService.getNReviews(Integer.parseInt(filmId),
+            List<Review> answer = new ArrayList<>(reviewService.getNegativeReviews(Integer.parseInt(filmId),
                     Integer.parseInt(count)));
             Collections.reverse(answer);
             return answer;
         }
         else {
-            List<Review> answer = new ArrayList<>(reviewService.getNReviews(Integer.parseInt(filmId),0));
+            List<Review> answer = new ArrayList<>(reviewService.getNegativeReviews(Integer.parseInt(filmId),0));
             Collections.reverse(answer);
             return answer;
         }
@@ -97,6 +97,6 @@ public class ReviewController {
     }
     @GetMapping("?filmId={filmId}&count={count}")
     public Set<Review> getNReviews(@PathVariable("filmId") int filmId, @PathVariable("count") int count){
-        return reviewService.getNReviews(filmId,count);
+        return reviewService.getNegativeReviews(filmId,count);
     }
 }

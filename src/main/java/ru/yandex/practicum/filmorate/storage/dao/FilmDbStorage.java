@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Component("filmDbStorage")
 public class FilmDbStorage implements FilmStorage {
 
+    private final double RECOMMENDATIONS_RATE = 0.4;
+
     private final JdbcTemplate jdbcTemplate;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
@@ -175,15 +177,11 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void addLike(long filmId, long userId) {
         jdbcTemplate.update("MERGE INTO likes(user_id, film_id) VALUES (?, ?);", userId, filmId);
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", userId, filmId, "LIKE", "ADD", System.currentTimeMillis());
     }
 
     @Override
     public void deleteLike(long filmId, long userId) {
         jdbcTemplate.update("DELETE FROM likes WHERE user_id=? AND film_id =?", userId, filmId);
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", userId, filmId, "LIKE", "REMOVE", System.currentTimeMillis());
     }
 
     @Override
@@ -304,9 +302,7 @@ public class FilmDbStorage implements FilmStorage {
         while (response.next()) {
             directors.add(new Director(response.getInt("director_id"), response.getString("director_name")));
         }
-        //if (!directors.isEmpty()) {
         film.setDirectors(directors);
-        //}
         return film;
     }
 
@@ -353,8 +349,7 @@ public class FilmDbStorage implements FilmStorage {
             List<Long> filmsOfOtherUsers = getFilmsLikedByOtherUsers(listOfOtherUsers, i);
             List<Long> commonFilms = listOfUserFilms.stream().filter(filmsOfOtherUsers::contains).collect(Collectors.toList());
 
-            // Если вкусы пользователей совпадают больше, чем на 40%, то фильмы рекомендуются
-            if (commonFilms.size() > listOfUserFilms.size() * 0.4) {
+            if (commonFilms.size() > listOfUserFilms.size() * RECOMMENDATIONS_RATE) {
                 filmsOfOtherUsers.removeAll(commonFilms);
 
                 //Собираем коллекцию непросмотренных фильмов из списка фильмов другого юзера

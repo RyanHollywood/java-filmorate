@@ -23,5 +23,5 @@ public interface ReviewDao {
 
     void update(Review review);
 
-    Set<Review> getNReviews(int filmId, int count);
+    Set<Review> getNegativeReviews(int filmId, int count);
 }

@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.ManyLikesException;
 import ru.yandex.practicum.filmorate.exception.NoSuchReviewException;
 import ru.yandex.practicum.filmorate.exception.ReviewNullException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -17,8 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
-public class ReviewDaoImpl implements ReviewDao{
+public class ReviewDaoImpl implements ReviewDao {
+
     private final JdbcTemplate jdbcTemplate;
+    private final EventService eventService;
 
     @Getter
     @Setter
@@ -27,10 +30,12 @@ public class ReviewDaoImpl implements ReviewDao{
     @Setter
     private UserService userService;
 
-    public ReviewDaoImpl(JdbcTemplate jdbcTemplate, FilmService filmService, UserService userService) {
+
+    public ReviewDaoImpl(JdbcTemplate jdbcTemplate, FilmService filmService, UserService userService, EventService eventService) {
         this.jdbcTemplate = jdbcTemplate;
         this.filmService = filmService;
         this.userService = userService;
+        this.eventService = eventService;
     }
 
     public int getId() {
@@ -39,15 +44,6 @@ public class ReviewDaoImpl implements ReviewDao{
             return response.getInt("review_id") + 1;
         }
         return 1;
-        /*
-        Set<Review> reviews = getAllReviews();
-        int maxId = 0;
-        for (Review review : reviews) {
-            if (maxId < review.getId()) maxId = review.getId();
-        }
-        return maxId + 1;
-
-         */
     }
 
     @Override
@@ -59,17 +55,12 @@ public class ReviewDaoImpl implements ReviewDao{
         if(review.getId() == 0) review.setId(getId());
         jdbcTemplate.update("MERGE INTO reviews(review_id,content,is_positive,user_id,film_id,useful) VALUES(?,?,?,?,?,?)",
                 review.getId(),review.getContent(),review.isPositive(),review.getUserId(),review.getFilmId(),review.getUseful());
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", review.getUserId(), review.getId(), "REVIEW", "ADD", System.currentTimeMillis());
         return review;
     }
 
     @Override
     public void removeReview(int id) {
-        Review review = getReviewById(id);
         jdbcTemplate.update("DELETE FROM reviews WHERE review_id = ?",id);
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", review.getUserId(), review.getId(), "REVIEW", "REMOVE", System.currentTimeMillis());
     }
 
     @Override
@@ -166,24 +157,17 @@ public class ReviewDaoImpl implements ReviewDao{
         review.setUserId(getReviewById(review.getId()).getUserId());
         jdbcTemplate.update("MERGE INTO reviews(review_id,content,is_positive,user_id,film_id,useful) VALUES(?,?,?,?,?,?)",
                 review.getId(),review.getContent(),review.isPositive(),review.getUserId(),review.getFilmId(),review.getUseful());
-        jdbcTemplate.update("INSERT INTO events(user_id,entity_id, event_type, operation, timestamp) " +
-                "VALUES (?, ?, ?, ?, ?)", review.getUserId(), review.getId(), "REVIEW", "UPDATE", System.currentTimeMillis());
-        /*
-        review.setFilmId(getReviewById(review.getEventId()).getFilmId());
-        review.setUseful(getReviewById(review.getEventId()).getUseful());
-        review.setUserId(getReviewById(review.getEventId()).getUserId());
-        removeReview(review.getEventId());
-        createReview(review);
-         */
     }
 
     @Override
-    public Set<Review> getNReviews(int filmId, int count) {
-        if(count == 0)count = Integer.MAX_VALUE;
+    public Set<Review> getNegativeReviews(int filmId, int count) {
+        if (count == 0) {
+            count = Integer.MAX_VALUE;
+        }
         Set<Review> answer = new HashSet<>();
-        for(Review review: getAllReviews()){
-            if(count==0)break;
-            if(review.getFilmId() == filmId){
+        for(Review review: getAllReviews()) {
+            if (count == 0)break;
+            if (review.getFilmId() == filmId) {
                 answer.add(review);
                 count--;
             }

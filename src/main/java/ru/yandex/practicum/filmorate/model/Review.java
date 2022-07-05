@@ -13,15 +13,20 @@ import java.util.Optional;
 public class Review {
     @NotNull
     int id;
+
     @NotNull
     @NotBlank
     String content;
+
     @NotNull
     int userId;
+
     @NotNull
     int filmId;
+
     @NotNull
     int useful;
+
     @NotNull Optional<Boolean> isPositive;
     @JsonProperty(value="isPositive")
     public boolean isPositive() {
