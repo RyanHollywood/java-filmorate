@@ -106,7 +106,7 @@ class FilmorateApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsBytes(user)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(mapper.writeValueAsString(user)))
                 .andReturn();
     }
@@ -192,7 +192,7 @@ class FilmorateApplicationTests {
 
         mvc.perform(get(USERS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(String.valueOf(usersArray)))
                 .andReturn();
     }
@@ -208,7 +208,7 @@ class FilmorateApplicationTests {
 
         mvc.perform(get(FILMS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().json(String.valueOf(filmsArray)))
                 .andReturn();
     }
