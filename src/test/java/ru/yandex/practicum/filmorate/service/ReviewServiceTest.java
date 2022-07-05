@@ -29,8 +29,8 @@ class ReviewServiceTest {
     void reload() {
         filmService = new FilmService(new InMemoryFilmStorage());
         userService = new UserService(new InMemoryUserStorage());
-        reviewService.getStorage().setFilmService(filmService);
-        reviewService.getStorage().setUserService(userService);
+        reviewService.getReviewDbStorage().setFilmService(filmService);
+        reviewService.getReviewDbStorage().setUserService(userService);
     }
 
     @AfterEach
