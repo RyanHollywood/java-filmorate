@@ -1,22 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.TreeSet;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class UserServiceTest {
+
+    /*
 
     private UserService userService;
 
@@ -133,4 +122,6 @@ class UserServiceTest {
         userService.addFriend(anotherUser.getId(), anotherOneUser.getId());
         assertEquals(List.of(anotherOneUser), userService.getCommonFriends(user.getId(), anotherUser.getId()));
     }
+
+     */
 }

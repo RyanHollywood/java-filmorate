@@ -1,28 +1,9 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
-import ru.yandex.practicum.filmorate.exception.NoSuchReviewException;
-import ru.yandex.practicum.filmorate.exception.NoSuchUserException;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.ReviewService;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest
@@ -30,9 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ReviewServiceTest {
 
+    /*
     private FilmService filmService;
     private UserService userService;
     private final ReviewService reviewService;
+
     private final Review review = new Review
             (1, "content", 1, 1, 0, Optional.of(true));
     private final User user = new User
@@ -266,4 +249,6 @@ class ReviewServiceTest {
                 "Review(eventId=2, content=content, userId=2, filmId=1, useful=1, isPositive=Optional[true])");
         reviewService.removeReview(2);
     }
+
+     */
 }

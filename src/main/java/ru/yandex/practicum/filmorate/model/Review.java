@@ -12,20 +12,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class Review {
     @NotNull
-    int id;
+    private int id;
 
     @NotNull
     @NotBlank
-    String content;
+    private String content;
 
     @NotNull
-    int userId;
+    private int userId;
 
     @NotNull
-    int filmId;
+    private int filmId;
 
     @NotNull
-    int useful;
+    private int useful;
 
     @NotNull Optional<Boolean> isPositive;
     @JsonProperty(value="isPositive")

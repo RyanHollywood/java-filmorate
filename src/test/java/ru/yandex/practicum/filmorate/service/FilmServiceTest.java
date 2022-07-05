@@ -1,21 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.NoSuchFilmException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class FilmServiceTest {
+
+    /*
 
     private FilmService filmService;
 
@@ -135,4 +122,5 @@ class FilmServiceTest {
 
         assertEquals(Set.of(film), filmService.getPopularByCounter(1));
     }*/
+
 }
