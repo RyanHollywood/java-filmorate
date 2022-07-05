@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.TreeSet;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -105,7 +106,7 @@ class FilmorateApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsBytes(user)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(mapper.writeValueAsString(user)))
                 .andReturn();
     }
@@ -191,13 +192,14 @@ class FilmorateApplicationTests {
 
         mvc.perform(get(USERS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(String.valueOf(usersArray)))
                 .andReturn();
     }
 
     @Test
     public void getFilms() throws Exception {
+        film.setDirectors(new TreeSet<>());
         postWithOkRequest(film, FILMS_PATH);
 
         JSONArray filmsArray = new JSONArray();
@@ -206,7 +208,7 @@ class FilmorateApplicationTests {
 
         mvc.perform(get(FILMS_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(String.valueOf(filmsArray)))
                 .andReturn();
     }
