@@ -27,7 +27,7 @@ public class ReviewController {
 
     @GetMapping
     public List<Review> show(@RequestParam Map<String,String> requestParams) {
-        String count =requestParams.get("count");
+        String count = requestParams.get("count");
         String filmId = requestParams.get("filmId");
         if(count==null & filmId == null) {
             List<Review> answer = reviewService.getAllReviews().stream()
@@ -41,7 +41,7 @@ public class ReviewController {
             Collections.reverse(answer);
             return answer;
         }
-        if(count != null) {
+        if (count != null) {
             List<Review> answer = new ArrayList<>(reviewService.getNegativeReviews(Integer.parseInt(filmId),
                     Integer.parseInt(count)));
             Collections.reverse(answer);

@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exception.ReviewNullException;
 import ru.yandex.practicum.filmorate.exception.ReviewValidationException;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.model.dao.ReviewDaoImpl;
+import ru.yandex.practicum.filmorate.storage.dao.ReviewDaoImpl;
 
 import java.util.Set;
 
@@ -26,8 +26,8 @@ public class ReviewService {
     public ReviewDaoImpl getReviewDbStorage() {
         return reviewDbStorage;
     }
+
     public Review createReview(Review review){
-        //переделать с логгированием
         if (review.getId() < 0) {
             log.warn("CREATE REVIEW UNSUCCESSFUL - REVIEW ID VALIDATION ERROR");
             throw new ReviewValidationException("WRONG Review eventId: " + review.getId() + ".");

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchGenreException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.dao.GenreDaoImpl;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDaoImpl;
 
 import java.util.Collection;
 import java.util.Optional;

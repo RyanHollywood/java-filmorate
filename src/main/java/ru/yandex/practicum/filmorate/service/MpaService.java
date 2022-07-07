@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchMpaException;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.dao.MpaDaoImpl;
+import ru.yandex.practicum.filmorate.storage.dao.MpaDaoImpl;
 
 import java.util.Collection;
 import java.util.Optional;

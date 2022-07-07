@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchDirectorException;
 import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.dao.DirectorDaoImpl;
+import ru.yandex.practicum.filmorate.storage.dao.DirectorDaoImpl;
 
 import java.util.Collection;
 import java.util.Optional;

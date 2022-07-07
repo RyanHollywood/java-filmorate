@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
@@ -35,7 +34,7 @@ public class FilmController {
         return filmService.getAll();
     }
 
-    @GetMapping("director/{directorId}")
+    @GetMapping("/director/{directorId}")
     public Collection<Film> getSortedFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
         return filmService.getByDirectorSorted(directorId, sortBy);
     }
