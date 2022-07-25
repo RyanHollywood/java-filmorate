@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoSuchMpaException;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.dao.MpaDaoImpl;
+import ru.yandex.practicum.filmorate.storage.dao.MpaDaoImpl;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class MpaService {
         Mpa mpa = mpaDao.getMpa(id);
         if (Optional.ofNullable(mpa).isEmpty()) {
             log.warn("GET REQUEST UNSUCCESSFUL - NO MPA WITH ID:" + id + " FOUND");
-            throw new NoSuchMpaException("There is no such mpa. Check id please!");
+            throw new NoSuchMpaException("There is no such mpa. Check eventId please!");
         }
         log.debug("GET REQUEST SUCCESSFUL - MPA WITH ID:" + id + " FOUND");
         return mpa;

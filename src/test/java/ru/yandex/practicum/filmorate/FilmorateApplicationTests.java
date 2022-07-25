@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.TreeSet;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -198,6 +199,7 @@ class FilmorateApplicationTests {
 
     @Test
     public void getFilms() throws Exception {
+        film.setDirectors(new TreeSet<>());
         postWithOkRequest(film, FILMS_PATH);
 
         JSONArray filmsArray = new JSONArray();

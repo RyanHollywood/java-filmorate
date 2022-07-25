@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 
 public interface UserStorage {
 
-    User get(Long id);
+    User get(long id);
+
+    Collection<Event> getFeed(long id);
 
     Collection<User> getAll();
 
@@ -14,11 +17,11 @@ public interface UserStorage {
 
     void update(User user);
 
-    void delete(Long id);
+    void delete(long id);
 
     void deleteAll();
 
-    boolean contains(Long id);
+    boolean contains(long id);
 
     long getNewId();
 

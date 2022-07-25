@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.time.DurationMin;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Data
-public class Film {
+public class Film implements Comparable<Film>{
     @NotNull
     private long id;
 
@@ -28,7 +27,7 @@ public class Film {
     private String description;
 
     @NotNull
-    @Past
+    //@Past
     private LocalDate releaseDate;
 
     @NotNull
@@ -37,6 +36,8 @@ public class Film {
 
     @NotNull
     private Mpa mpa;
+
+    private TreeSet<Director> directors;
 
     private TreeSet<Genre> genres;
 
@@ -62,5 +63,10 @@ public class Film {
 
     public boolean containsLike(Long id) {
         return likes.contains(id);
+    }
+
+    @Override
+    public int compareTo(Film film) {
+        return (int) (this.id - film.getId());
     }
 }

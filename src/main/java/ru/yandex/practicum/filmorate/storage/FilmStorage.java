@@ -10,7 +10,7 @@ public interface FilmStorage {
 
     Collection<Film> getAll();
 
-    Collection<Film> getPopular(int quantity);
+    Collection<Film> getPopular(int quantity, Integer year, Integer genreId);
 
     void add(Film film);
 
@@ -31,4 +31,14 @@ public interface FilmStorage {
     void deleteLike(long filmId, long userId);
 
     boolean containsLike(long filmId, long userId);
+
+    Collection<Film> searchFilm(String query,String by);
+
+    Collection<Film> getCommon(long userId, long friendId);
+
+    Collection<Film> getRecommendations(long userId);
+
+    Collection<Film> getByDirectorByLikes(int directorId);
+
+    Collection<Film> getByDirectorByYear(int directorId);
 }
